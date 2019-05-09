@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 const Content = ({body}) => {
 
     return (
-      <div className="">
+      <div className="container">
         { body }
       </div>
     );

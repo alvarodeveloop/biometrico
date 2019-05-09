@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import  Navbar  from './Basic/Navbar'
+import PropTypes from 'prop-types'
 
-export default class Header extends Component {
+class Header extends Component {
 
-
-    render() {
-        return (
-            <h1>Aquí el Header</h1>
-        );
-    }
+  render(){
+    const { navigation } = this.props
+    return (
+      <div>
+        <Navbar />
+        <br/>
+      </div>
+    )
+  }
 }
+
+export default Header

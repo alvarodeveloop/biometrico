@@ -7,9 +7,13 @@
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
         <!-- Styles -->
+        <link href="{{ asset('css/fontawesome-all.min.css') }}" rel="stylesheet" media="all">
+
     </head>
     <body>
         <div id="root"></div>
+        <script type="text/javascript" src="{{ asset('js/adapter.js') }}"></script>
         <script type="text/javascript" src="/js/app.js"></script>
+
     </body>
 </html>
