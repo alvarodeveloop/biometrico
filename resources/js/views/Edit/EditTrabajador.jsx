@@ -201,7 +201,7 @@ class EditTrabajador extends React.Component {
                 id="email"
                 type="email"
                 label="Email"
-                requerido={true}
+                requerido={false}
                 onChange={this.onChange}
                 value={user.email}
               />

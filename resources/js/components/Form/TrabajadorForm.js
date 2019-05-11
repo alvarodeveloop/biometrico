@@ -69,7 +69,7 @@ class TrabajadorForm extends React.Component{
       })
 
       let array_turnos = val[1].data.map((v) => {
-        return {value: v.id, label: v.turno}
+        return {value: v.id, label: 'Nombre: '+v.turno+' desde:'+v.desde+' hasta:'+v.hasta}
       })
 
       this.setState({
@@ -175,7 +175,7 @@ class TrabajadorForm extends React.Component{
             id="email"
             type="email"
             label="Email"
-            requerido={true}
+            requerido={false}
             onChange={this.onChange}
             value={email}
           />

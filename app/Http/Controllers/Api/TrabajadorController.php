@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Validation\Rule;
 use App\Models\Trabajador;
 use JWTAuth;
 use QrCode;
@@ -15,12 +16,21 @@ class TrabajadorController extends Controller
     public function index(){
       $user = JWTAuth::user();
 
-      $sql = "trabajador.*,
+      $sql = "trabajador.*,CONCAT(trabajador.nombre,' ',trabajador.apellido) as label,
+      trabajador.id as value,
                 (SELECT turno from turno where id = trabajador.id_turno) as turno,
                 (SELECT cargo from cargo where id = trabajador.id_cargo) as cargo";
+      $where = "";
+      if($user->id_perfil === 2){
+        $where = "id_departamento IN (SELECT id from departamento where id_ente = $user->id_ente)";
+      }else if($user->id_perfil === 3){
+        $where = "id_departamento = $user->id_departamento";
+      }else if($user->id_perfil === 1){
+        $where = "'1'";
+      }
 
       $worker = Trabajador::select(DB::raw($sql))->
-                where('id_departamento',$user->id_departamento)
+                whereRaw($where)
                 ->get();
       return response()->json($worker,200);
     }
@@ -28,7 +38,9 @@ class TrabajadorController extends Controller
     public function store(Request $request){
 
       $request->validate([
-        'email' => 'unique:trabajador',
+        'email' => Rule::unique('trabajador')->where(function ($query) {
+          $query->whereRaw('email is not null');
+        }),
         'cedula' => 'unique:trabajador'
       ]);
 

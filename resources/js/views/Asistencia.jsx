@@ -10,23 +10,29 @@ class Asistencia extends React.Component {
     this.state = {
       thead: [
         'Trabajador',
+        'Foto Trabajador',
         'Departamento',
         'Cargo',
         'Turno',
         'Tipo',
-        'LLegada',
+        'Llegada',
+        'Imagen',
         'Fecha',
       ],
       tbody_key: [
         'nombre_trabajador',
+        'imagen_trabajador',
         'departamento',
         'cargo',
         'turno',
         'tipo',
         'llegada',
+        'imagen',
         'fecha',
       ],
       tbody: [],
+      id_worker: null,
+      id_ente: null
     }
 
     this.get = this.get.bind(this)
@@ -34,11 +40,28 @@ class Asistencia extends React.Component {
   }
 
   componentWillMount(){
-    this.get()
+    if(this.props.cedulaWorker){
+      this.getByCedula(this.props.cedulaWorker)
+    }else if(this.props.idEnte){
+      this.getByEnte(this.props.idEnte)
+    }else{
+      this.get()
+    }
+  }
+
+  componentWillreceiveProps(nextProps){
+    if(nextProps.cedulaWorker !== this.state.cedulaWorker){
+      this.getByCedula(nextProps.cedulaWorker)
+    }
   }
 
   get(){
-    let route = this.props.byDay ? '/api/asistencia_by_day' : '/api/asistencia'
+    let route = ""
+    if(this.props.byDay){
+      route = '/api/asistencia_by_day'
+    }else{
+      route = '/api/asistencia'
+    }
 
     axios.get(route).then(res => {
       this.setState({
@@ -49,8 +72,32 @@ class Asistencia extends React.Component {
     })
   }
 
-  searchByPeriod(state){
-    axios.post('/api/asistencia_filter',state).then(res =>{
+  getByCedula(cedulaWorker){
+    axios.get('/api/asistencia_by_cedula/'+cedulaWorker).then(res => {
+      this.setState({
+        tbody: res.data.asis,
+        id_worker: res.data.id_worker
+      })
+    }).catch(({response}) => {
+      alert(response.data.error)
+    })
+  }
+
+  getByEnte(ente){
+    axios.get('/api/asistencia_by_ente/'+ente).then(res => {
+      this.setState({
+        tbody: res.data,
+        id_ente: ente
+      })
+    }).catch(({response}) => {
+      alert(response.data.error)
+    })
+  }
+
+  searchByPeriod(data){
+    data.id_ente = this.state.id_ente
+    data.id_worker = this.state.id_worker
+    axios.post('/api/asistencia_filter',data).then(res =>{
       this.setState({
         tbody: res.data
       })
@@ -68,8 +115,10 @@ class Asistencia extends React.Component {
           thead={thead}
           tbody_original={tbody}
           tbody_key={tbody_key}
-          pathImage="/images/trabajador/asistencia/"
+          pathImage="/images/asistencia/"
+          pathImageTrabajador="/images/trabajador/"
           searchByPeriod={this.searchByPeriod}
+          hideFilter={this.props.hideFilter}
         />
       </div>
     )
@@ -77,7 +126,11 @@ class Asistencia extends React.Component {
 }
 
 Asistencia.propTypes = {
-  byDay: PropTypes.bool
+  byDay: PropTypes.bool,
+  idTrabajador: PropTypes.string,
+  cedulaWorker: PropTypes.string,
+  hideFilter: PropTypes.bool,
+  idEnte: PropTypes.string,
 }
 
 export default Asistencia;

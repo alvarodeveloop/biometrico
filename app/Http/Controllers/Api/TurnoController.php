@@ -12,7 +12,7 @@ class TurnoController extends Controller
     //
     public function index(){
       $user = JWTAuth::user();
-      $turno = Turno::where('id_departamento',$user->id_departamento)->get();
+      $turno = Turno::where('id_ente',$user->id_ente)->get();
       return response()->json($turno,200);
     }
 
@@ -21,8 +21,8 @@ class TurnoController extends Controller
       $userToken = JWTAuth::user();
       $turno = new Turno;
       $turno->fill($request->all());
-      $turno->id_departamento = $userToken->id_departamento;
-      
+      $turno->id_ente = $userToken->id_ente;
+
       $turno->save();
       return response()->json([],200);
     }

@@ -17,10 +17,9 @@ class Navbar extends React.Component{
   cerrarSesion(e){
     e.preventDefault()
     localStorage.removeItem('token')
-    this.props.logout()
     axios.post('/api/auth/logout').then(res => {
       setAuthorizationToken(null)
-      return <Redirect to="/" push={true} />
+      this.props.logout()
     })
 
   }
@@ -31,8 +30,8 @@ class Navbar extends React.Component{
       <ul className="navbar-nav ml-auto">
         <li className="nav-item dropdown">
           <a className="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-            <i className="fa fa-cogs"></i>
-            Configuración
+            <i className="fas fa-sign-out-alt"></i>
+            Extra
           </a>
           <div className="dropdown-menu">
             <NavLink className="dropdown-item" to="/perfil">
@@ -52,10 +51,10 @@ class Navbar extends React.Component{
           Asistencia
         </a>
         <div className="dropdown-menu">
-          <NavLink className="dropdown-item" to="/panelAsistencia">
+          <NavLink className="dropdown-item" to={ id_perfil == 1 ? "/ente/asistencia" : "/asistencia" }>
             Panel Asistencia
           </NavLink>
-          <NavLink className="dropdown-item" to="/reporteAsistencia">
+          <NavLink className="dropdown-item" to="/reporte">
             Reporte
           </NavLink>
         </div>
@@ -67,7 +66,7 @@ class Navbar extends React.Component{
         <a className="navbar-brand" href="#">Logo</a>
         <ul className="navbar-nav">
           <li className="nav-item">
-            <NavLink to="/homeMaster" className="nav-link">
+            <NavLink to="/home" className="nav-link">
               <i className="fas fa-tachometer-alt"></i>
               Escritorio
               <span className="bot-line"></span>
@@ -75,7 +74,7 @@ class Navbar extends React.Component{
           </li>
           <li className="nav-item">
             <NavLink to="/ente" className="nav-link">
-              <i className="fas fa-camera"></i>
+              <i className="fas fa-building"></i>
               Registrar Ente
               <span className="bot-line"></span>
             </NavLink>
@@ -98,23 +97,32 @@ class Navbar extends React.Component{
         <a className="navbar-brand" href="#">Logo</a>
         <ul className="navbar-nav">
           <li className="nav-item">
-            <NavLink to="/homeAdmin" className="nav-link">
+            <NavLink to="/home" className="nav-link">
               <i className="fas fa-tachometer-alt"></i>
-              Inicio
+              Escritorio
               <span className="bot-line"></span>
             </NavLink>
           </li>
-          <li className="nav-item">
-            <NavLink to="/departamento" className="nav-link">
-              <i className="fas fa-hospital-alt"></i>
-              Departamento
-              <span className="bot-line"></span>
-            </NavLink>
+          <li className="nav-item dropdown">
+            <a className="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+              <i className="fa fa-user"></i>
+              Cargos y <br/> Departamentos
+            </a>
+            <div className="dropdown-menu">
+              <NavLink to="/departamento" className="dropdown-item">
+                Departamento
+                <span className="bot-line"></span>
+              </NavLink>
+              <NavLink to="/cargo" className="dropdown-item">
+                Cargos
+                <span className="bot-line"></span>
+              </NavLink>
+            </div>
           </li>
           <li className="nav-item">
-            <NavLink to="/cargo" className="nav-link">
-              <i className="fas fa-users"></i>
-              Cargos
+            <NavLink to="/turno" className="nav-link">
+              <i className="fas fa-clock"></i>
+              Turno
               <span className="bot-line"></span>
             </NavLink>
           </li>
@@ -126,7 +134,6 @@ class Navbar extends React.Component{
               <span className="bot-line"></span>
             </NavLink>
           </li>
-
         </ul>
         { ulLogout }
       </nav>
@@ -139,12 +146,12 @@ class Navbar extends React.Component{
           <li className="nav-item">
             <NavLink to="/home" className="nav-link">
               <i className="fas fa-tachometer-alt"></i>
-              Inicio
+              Escritorio
               <span className="bot-line"></span>
             </NavLink>
           </li>
           <li className="nav-item">
-            <NavLink to="/asistencia" className="nav-link">
+            <NavLink to="/tomarAsistencia" className="nav-link">
               <i className="fas fa-camera"></i>
               Tomar Asistencia
               <span className="bot-line"></span>
@@ -176,7 +183,7 @@ class Navbar extends React.Component{
         <a className="navbar-brand" href="#">Logo</a>
         <ul className="navbar-nav">
           <li className="nav-item">
-            <NavLink to="/login" className="nav-link">
+            <NavLink to="/" className="nav-link">
               <i className="fas fa-tachometer-alt"></i>
               Iniciar Sesisón
               <span className="bot-line"></span>

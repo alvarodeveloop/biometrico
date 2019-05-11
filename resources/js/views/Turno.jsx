@@ -21,7 +21,8 @@ class Turno extends React.Component {
         'hasta',
       ],
       tbody: [],
-      editRoute: '/editTurno/'
+      editRoute: '/editTurno/',
+      user: JSON.parse(localStorage.user)
     }
 
     this.get = this.get.bind(this)
@@ -51,11 +52,13 @@ class Turno extends React.Component {
   }
 
   render () {
-    const {thead,tbody,tbody_key,editRoute} = this.state
+    const {thead,tbody,tbody_key,editRoute,user} = this.state
 
     return(
       <div>
-        <TurnoForm get={this.get} />
+        {user.id_perfil === 2 ? (
+          <TurnoForm get={this.get} />
+        ) : (null)}
         <br/>
         <div className="row">
           <WrappedTable
@@ -65,6 +68,8 @@ class Turno extends React.Component {
             tbody_key={tbody_key}
             delete={this.delete}
             editRoute={editRoute}
+            hideDelete={user.id_perfil === 2 ? false : true}
+            hideEdit={user.id_perfil === 2 ? false : true}
           />
         </div>
       </div>

@@ -14,15 +14,15 @@ class Asistencia extends Model
 
     public static function determinatedTypeRegister($id){
       $today = date('Y-m-d');
-      $where = "CAST(created_at AS DATE) = '$today'";
+      $where = "CAST(created_at AS DATE) = '$today' and id_trabajador = $id";
         return self::select('*')
               ->whereRaw($where)
               ->get();
     }
 
-    public static function get($id_ente = null,$id_departamento = null,$id_trabajador = null,$desde = null,$hasta = null,$hoy = null){
+    public static function get($id_ente = null,$id_departamento = null,$id_trabajador = null,$desde = null,$hasta = null,$hoy = null,$status = null,$llegada = null){
 
-      $where = self::makeWhere($id_ente,$id_departamento,$id_trabajador,$desde,$hasta,$hoy);
+      $where = self::makeWhere($id_ente,$id_departamento,$id_trabajador,$desde,$hasta,$hoy,$status,$llegada);
 
       $sql = "SELECT a.*,
               CONCAT(t.nombre,' ',t.apellido) as nombre_trabajador,
@@ -39,7 +39,8 @@ class Asistencia extends Model
               c.cargo,
               tu.turno,
               d.departamento,
-              to_char(a.created_at, 'DD-MM-YYYY HH:MI:SS') as fecha
+              to_char(a.created_at, 'DD-MM-YYYY HH12:MI:SS AM') as fecha,
+              t.imagen as imagen_trabajador
 
               from asistencia as a
               INNER JOIN trabajador as t ON t.id = a.id_trabajador
@@ -52,7 +53,7 @@ class Asistencia extends Model
     }
 
     public static function stadistic_llegada($id_ente = null,$id_departamento = null,$id_trabajador = null,$type = false){
-      $where = '1';
+      $where = "WHERE '1'";
       if($id_ente){
         $where = "WHERE d.id_ente = $id_ente";
       }
@@ -84,7 +85,7 @@ class Asistencia extends Model
                 SELECT
                 t.id,
                 CONCAT(t.nombre,' ',t.apellido) as name,
-                COUNT(a.tipo_llegada) as value
+                CAST(COUNT(a.tipo_llegada) as INTEGER) as value
 
                 from asistencia as a
                 INNER JOIN trabajador as t ON t.id = a.id_trabajador
@@ -104,7 +105,9 @@ class Asistencia extends Model
       $id_trabajador = null ,
       $desde = null ,
       $hasta = null,
-      $hoy = null){
+      $hoy = null,
+      $status = null,
+      $llegada = null){
 
       $where = "";
 
@@ -151,6 +154,23 @@ class Asistencia extends Model
           $where.= " WHERE CAST(a.created_at as DATE) = '$hoy'";
         }
       }
-      return $where; 
+
+      if($status !== null && $status !== ""){
+        if(!empty($where)){
+          $where.= " and a.tipo_llegada = $status";
+        }else{
+          $where.= " WHERE a.tipo_llegada = $status";
+        }
+      }
+
+      if($llegada !== null && $llegada !== ""){
+        if(!empty($where)){
+          $where.= " and a.tipo_registro = $llegada";
+        }else{
+          $where.= " WHERE a.tipo_registro = $llegada";
+        }
+      }
+
+      return $where;
     }
 }

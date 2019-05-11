@@ -79,7 +79,7 @@ class EditCargo extends React.Component {
               </div>
             </div>
           </form>
-        </div>
+        </div>  
       </div>
 
     )

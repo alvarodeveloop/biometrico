@@ -9,6 +9,7 @@ import {
 const Chart = ({type,data,color,title}) => {
 
   if(type === 'pie'){
+
     return (
       <div>
         <h4>{title}</h4>
@@ -19,7 +20,7 @@ const Chart = ({type,data,color,title}) => {
             <Tooltip />
           </PieChart>
         ) : (
-          <p className="alert alert-danger text-center" style={{marginTop:'100px'}}>Sin Registros</p>
+          <p className="alert alert-danger text-center" style={{marginTop:'80px'}}>Sin Registros</p>
         )}
 
       </div>
@@ -29,20 +30,24 @@ const Chart = ({type,data,color,title}) => {
       <div>
         <h4>{title}</h4>
         <br/>
-        <AreaChart
-          width={400}
-          height={300}
-          data={data}
-          margin={{
-            top: 40, right: 30, left: 0, bottom: 0,
-          }}>
+        {data.length > 0 ? (
+          <AreaChart
+            width={400}
+            height={300}
+            data={data}
+            margin={{
+              top: 40, right: 30, left: 0, bottom: 0,
+            }}>
 
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Area type="monotone" dataKey="value" stroke="#8884d8" fill={color} />
-        </AreaChart>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Area type="monotone" dataKey="value" stroke="#8884d8" fill={color} />
+          </AreaChart>
+        ): (
+            <p className="alert alert-danger text-center" style={{marginTop:'80px'}}>Sin Registros</p>
+        )}
       </div>
     )
   }

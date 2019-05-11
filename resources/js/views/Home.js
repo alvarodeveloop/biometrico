@@ -3,6 +3,7 @@ import Asistencia from './Asistencia'
 import Chart from '../components/Basic/Chart'
 import PanelAviso from '../components/Basic/PanelAviso'
 import { forkJoin } from 'rxjs'
+import {Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
 
 export default class Home extends Component {
 
@@ -14,11 +15,16 @@ export default class Home extends Component {
       late: [],
       user: JSON.parse(localStorage.user),
       totalTrabajador: 0,
-      totalAsistencia: 0
+      totalAsistencia: 0,
+      isOpen: false
     }
+
+    this.searchWorker = this.searchWorker.bind(this)
+    this.toggle = this.toggle.bind(this)
+
   }
 
-  componentWillMount(){
+  componentDidMount(){
     const promises = forkJoin(
         axios.get('/api/asistencia_chart'),
         axios.get('/api/trabajador'),
@@ -35,20 +41,49 @@ export default class Home extends Component {
     })
   }
 
+  async searchWorker(e){
+    e.preventDefault()
+    let inputCedula = document.getElementById('cedula')
+    if(inputCedula.value){
+      await this.setState({
+        cedula : inputCedula.value
+      })
+      this.toggle()
+    }else{
+      alert('Debe colocar una cédula')
+    }
+  }
+
+  toggle(e){
+    this.setState({
+      isOpen: !this.state.isOpen
+    })
+  }
+
   render() {
 
       const {early,late,user,totalTrabajador,totalAsistencia} = this.state
 
       return (
           <div>
-            <div className="row">
+            <br/>
+            <div className="row jumbotron">
               <div className="col-md-6 col-sm-6">
-                <h3 className="text-center">Bienvenido {user.nombre+' '+user.apellido}</h3>
+                <h3 className="">Bienvenido {user.nombre+' '+user.apellido}</h3>
               </div>
               <div className="col-md-6 col-sm-6">
+                <div className="form-group">
+                  <div className="input-group">
+                    <input type="number" id="cedula" className="form-control" placeholder="Ingrese la cédula del trabajador"
+                       onChange={this.onChange} />
+                    <div className="input-group-addon">
+                      <button className="btn btn-primary" onClick={this.searchWorker}><i className="fas fa-search"></i></button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-            <br/>
+            <br/><br/>
             <div className="row">
               <div className="col-md-3 col-sm-3">
                 <PanelAviso
@@ -83,6 +118,8 @@ export default class Home extends Component {
                   title={totalTrabajador.toString()}
                   text="Total Trabajadores"
                   fa="fas fa-users"
+                  link="/trabajador"
+                  history={this.props.history}
                 />
               </div>
             </div>
@@ -98,7 +135,19 @@ export default class Home extends Component {
               </div>
             </div>
             <br/><br/>
+            <h4>Asistencia del Día</h4>
             <Asistencia byDay={true} />
+
+          <Modal isOpen={this.state.isOpen} toggle={this.toggle} className="modal-xl">
+              <ModalHeader toggle={this.toggle}>Asistencia por Trabajador</ModalHeader>
+                <ModalBody>
+                  <Asistencia hideFilter={false} cedulaWorker={this.state.cedula} />
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="secondary" onClick={this.toggle}>Cerrar</Button>
+                </ModalFooter>
+            </Modal>
+
           </div>
       );
   }

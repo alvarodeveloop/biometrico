@@ -14,12 +14,19 @@ class TableComponentAssist extends React.Component{
 
     this.state ={
       desde: '',
-      hasta: ''
+      hasta: '',
+      texto: 'Buscar',
     }
 
     this.onChange = this.onChange.bind(this)
     this.searchByPeriod = this.searchByPeriod.bind(this)
     this.handleOnChange = this.handleOnChange.bind(this)
+  }
+
+  componentWillReceiveProps(nextProps) {
+      this.setState({
+        texto: 'Buscar'
+      });
   }
 
   onChange(e){
@@ -33,16 +40,24 @@ class TableComponentAssist extends React.Component{
   }
 
   searchByPeriod(e){
+
     e.preventDefault()
-    this.props.searchByPeriod(this.state)
+    this.setState({
+      texto: 'Buscando...'
+    });
+
+    let estado = Object.assign({},this.state)
+    this.props.searchByPeriod(estado)
   }
 
   render(){
-    const {thead,tbody,tbody_key,indexSortable,orderSortable,itemsPerPage,pathImage} = this.props
+    const {thead,tbody,tbody_key,indexSortable,orderSortable,itemsPerPage,pathImage,pathImageTrabajador} = this.props
     return(
     	<div className="card">
     			<div className="card-header">
-            <div className="row">
+            {this.props.hideFilter ? '' : (
+
+              <div className="row">
               <FormGroup
                 cols="col-md-4 col-sm-4"
                 id="desde"
@@ -63,9 +78,10 @@ class TableComponentAssist extends React.Component{
               />
               <div className="col-md-4 col-sm-4">
                 <br/>
-                <Button color="danger" block onClick={this.searchByPeriod}>Buscar</Button>
+                <Button color="danger" block onClick={this.searchByPeriod}>{this.state.texto}</Button>
               </div>
             </div>
+            )}
             <br/>
     	    	<div className="row">
     	    		<div className="col-md-1">
@@ -123,11 +139,21 @@ class TableComponentAssist extends React.Component{
                           <tr key={k}>
                             {
                               map(tbody_key,(v1,k1) => {
-                                if(v1 === "imagen" || v1 === "qrcode"){
+                                if(v1 === "imagen"){
                                   if(v[v1]){
                                     return <td key={k1}>
                                       <a target="_blank" href={pathImage+v[v1]}>
-                                        <img src={pathImage+v[v1]} width="70px" />
+                                        <img src={pathImage+v[v1]} height="40px" />
+                                      </a>
+                                    </td>
+                                  }else{
+                                    return <td key={k1}></td>
+                                  }
+                                }else if(v1 === "imagen_trabajador"){
+                                  if(v[v1]){
+                                    return <td key={k1}>
+                                      <a target="_blank" href={pathImageTrabajador+v[v1]}>
+                                        <img src={pathImageTrabajador+v[v1]} height="40px" />
                                       </a>
                                     </td>
                                   }else{
@@ -198,7 +224,9 @@ TableComponentAssist.propTypes = {
   itemsPerPage: PropTypes.string.isRequired,
   pagination: PropTypes.array.isRequired,
   pathImage: PropTypes.string,
-  searchByPeriod: PropTypes.func.isRequired
+  pathImageTrabajador: PropTypes.string,
+  searchByPeriod: PropTypes.func.isRequired,
+  hideFilter: PropTypes.bool
 }
 
 export default Pagination(TableComponentAssist)

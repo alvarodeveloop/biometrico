@@ -10,7 +10,7 @@ class FormGroup extends React.Component{
 
   render(){
 
-    const {cols,label,requerido,id,onChange,type,value,options} = this.props
+    const {cols,label,requerido,id,onChange,type,value,options,disabled} = this.props
 
     return(
       <div className={'form-group '+cols}>

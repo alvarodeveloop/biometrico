@@ -71,6 +71,8 @@ class WrappedTableAssist extends React.Component {
           itemsPerPage={itemsPerPage}
           pathImage={this.props.pathImage}
           searchByPeriod={this.props.searchByPeriod}
+          hideFilter={this.props.hideFilter}
+          pathImageTrabajador={this.props.pathImageTrabajador}
         />
       </div>
     )
@@ -84,7 +86,9 @@ WrappedTableAssist.propTypes = {
   tbody_key: PropTypes.array.isRequired,
   cols: PropTypes.string.isRequired,
   pathImage: PropTypes.string,
-  searchByPeriod: PropTypes.func.isRequired
+  pathImageTrabajador: PropTypes.string,
+  searchByPeriod: PropTypes.func.isRequired,
+  hideFilter: PropTypes.bool
 }
 
 export default WrappedTableAssist

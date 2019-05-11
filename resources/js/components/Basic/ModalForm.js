@@ -1,6 +1,7 @@
 import React from 'react'
 import map  from 'lodash/map'
 import {Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { toast,ToastContainer } from 'react-toastify';
 import PropTypes from 'prop-types'
 
 
@@ -31,23 +32,24 @@ class ModalForm extends React.Component{
   onSubmit(e){
     e.preventDefault()
     this.props.onSubmit().then(res => {
+
       this.props.get()
       this.toggle()
       this.props.clear()
       this.setState({
         error: []
       })
+      toast.success('Registro Guardado!', {containerId: 'A'});
+
     }).catch(({response}) => {
       let errors = []
       if(response.data.errors){
-
         errors = map(response.data.errors,(v,k) => (<li key={k}>{v[0]}</li>))
-
         this.setState({
           error: errors
         })
+        toast.error('Error!', {containerId: 'A'});
       }
-
     })
 
   }
@@ -76,6 +78,7 @@ class ModalForm extends React.Component{
             </ModalFooter>
           </form>
         </Modal>
+        <ToastContainer enableMultiContainer containerId={'A'} position={toast.POSITION.TOP_RIGHT} />
       </div>
     )
   }

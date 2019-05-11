@@ -25,6 +25,9 @@ Route::group([
 
 Route::namespace('Api')->group(function(){
 
+  Route::get('/user/{id}','UserController@show');
+  Route::put('/user/{id}','UserController@update');
+
   Route::get('/ente','EnteController@index');
   Route::get('/ente/{id}','EnteController@show');
   Route::post('/ente','EnteController@store');
@@ -61,6 +64,9 @@ Route::namespace('Api')->group(function(){
   Route::get('/asistencia_chart','AsistenciaController@chart_statistic');
   Route::get('/asistencia_by_day','AsistenciaController@asistencia_by_day');
   Route::post('/asistencia_filter','AsistenciaController@asistencia_filter');
+  Route::get('/asistencia_by_cedula/{cedula}','AsistenciaController@asistencia_by_cedula');
+  Route::get('/asistencia_by_ente/{ente}','AsistenciaController@asistencia_by_ente');
+
 
   Route::get('/config','ConfigController@index');
   Route::get('/config/{id}','ConfigController@show');
@@ -68,5 +74,6 @@ Route::namespace('Api')->group(function(){
   Route::put('/config/{id}','ConfigController@update');
   Route::delete('/config/{id}','ConfigController@destroy');
 
+  Route::post('/reporte/general','ReporteController@reporteGeneral');
 
 });

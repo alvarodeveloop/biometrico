@@ -8,6 +8,6 @@ class Turno extends Model
 {
     //
     protected $table = "turno";
-    protected $fillable = ['turno','desde','hasta','id_departamento'];
+    protected $fillable = ['turno','desde','hasta','id_ente'];
     public $timestamps = false;
 }

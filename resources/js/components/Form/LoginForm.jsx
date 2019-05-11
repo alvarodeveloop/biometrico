@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import FormGroup from '../Basic/FormGroup'
-import jwtDecode from 'jwt-decode'
+import { toast,ToastContainer } from 'react-toastify';
 import setAuthorizationToken from '../../utils/setAuthorizationToken'
 
 class LoginForm extends React.Component {
@@ -33,8 +33,12 @@ class LoginForm extends React.Component {
       this.props.login(res.data.user)
       setAuthorizationToken(token)
       this.props.redirect()
-    }).catch(err => {
-      console.log(err)
+    }).catch( ({response}) => {
+      if(response.data.error){
+        toast.error(response.data.error, {containerId: 'A'});
+      }else{
+        toast.error('Error contacte con soporte', {containerId: 'A'});
+      }
     })
 
     /*this.props.login(this.state).then(res => {
@@ -84,6 +88,7 @@ class LoginForm extends React.Component {
           </div>
         </div>
         </div>
+        <ToastContainer enableMultiContainer containerId={'A'} position={toast.POSITION.TOP_RIGHT} />
       </div>
 
     )

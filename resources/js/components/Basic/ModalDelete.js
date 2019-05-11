@@ -1,5 +1,6 @@
 import React from 'react'
 import {Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { toast,ToastContainer } from 'react-toastify';
 import PropTypes from 'prop-types'
 
 
@@ -38,6 +39,7 @@ class ModalForm extends React.Component{
   handleDelete(e){
     e.preventDefault()
     this.props.onDelete()
+    toast.success('Registro Eliminado!', {containerId: 'B'});
     this.toggle()
   }
 
@@ -54,6 +56,7 @@ class ModalForm extends React.Component{
               <Button color="secondary" onClick={this.toggle}>Cancelar</Button>
             </ModalFooter>
         </Modal>
+        <ToastContainer enableMultiContainer containerId={'B'} position={toast.POSITION.TOP_RIGHT} />
       </div>
     )
   }

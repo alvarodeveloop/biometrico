@@ -16,7 +16,9 @@ class EnteForm extends React.Component {
       cedula: "",
       direccion: "",
       email: "",
-      direccion_ente: ""
+      direccion_ente: "",
+      nacionalidad: "",
+      nacionalidades : [{value: 'V',label: 'Venezolano'},{value: 'E', label: 'Extranjero'}],
     }
     this.onChange = this.onChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
@@ -32,20 +34,24 @@ class EnteForm extends React.Component {
   }
 
   onSubmit(){
-    return axios.post('/api/ente',this.state)
+    let data = Object.assign({},this.state)
+    delete data.nacionalidades
+    return axios.post('/api/ente',data)
   }
 
   clear(){
     Object.keys(this.state).forEach((v,k) => {
-      this.setState({
-        [v] : ""
-      })
+      if(v !== "nacionalidades"){
+        this.setState({
+          [v] : ""
+        })
+      }
     })
   }
 
   fieldForm(){
 
-    const {ente,direccion_ente,email,nombre,telefono,cedula,direccion,apellido} = this.state
+    const {ente,direccion_ente,email,nombre,telefono,cedula,direccion,apellido,nacionalidad,nacionalidades} = this.state
 
     return(
       <div>
@@ -95,12 +101,13 @@ class EnteForm extends React.Component {
         <div className="row">
           <FormGroup
             cols="col-md-6 col-sm-6"
-            id="telefono"
-            type="number"
-            label="Teléfono"
+            id="nacionalidad"
+            type="select"
+            label="Nacionalidad"
             requerido={true}
             onChange={this.onChange}
-            value={telefono}
+            value={nacionalidad}
+            options={this.state.nacionalidades}
           />
           <FormGroup
             cols="col-md-6 col-sm-6"
@@ -122,6 +129,17 @@ class EnteForm extends React.Component {
             onChange={this.onChange}
             value={email}
           />
+          <FormGroup
+            cols="col-md-6 col-sm-6"
+            id="telefono"
+            type="number"
+            label="Teléfono"
+            requerido={true}
+            onChange={this.onChange}
+            value={telefono}
+          />
+        </div>
+        <div className="row">
           <FormGroup
             cols="col-md-6 col-sm-6"
             id="direccion"

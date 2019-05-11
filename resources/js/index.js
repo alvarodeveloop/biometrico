@@ -8,6 +8,7 @@ import rootReducer from './rootReducer'
 import { login } from './action/Auth'
 import setAuthorizationToken from './utils/setAuthorizationToken'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-toastify/dist/ReactToastify.css';
 import './components/App.css'
 
 const store = createStore(

@@ -72,7 +72,14 @@ class TableComponent extends React.Component{
     	        <table id="" className="table table-bordered">
     	        	<thead className="thead-dark">
                   <tr>
-                    {map(thead,(v,k) => <th className="text-center" key={k}><b>{v}</b></th>)}
+
+                    {map(thead,(v,k) =>{
+                      if(this.props.hideEdit && this.props.hideDelete && v === "Acción"){
+                        return null
+                      }else {
+                        return <th className="text-center" key={k}><b>{v}</b></th>
+                      }
+                    })}
                   </tr>
     	        	</thead>
     	        	<tbody className="text-center">
@@ -87,7 +94,7 @@ class TableComponent extends React.Component{
                                   if(v[v1]){
                                     return <td key={k1}>
                                       <a target="_blank" href={pathImage+v[v1]}>
-                                        <img src={pathImage+v[v1]} width="70px" />
+                                        <img src={pathImage+v[v1]} width="50px" />
                                       </a>
                                     </td>
                                   }else{
@@ -99,7 +106,7 @@ class TableComponent extends React.Component{
                               })
 
                             }
-                          {this.props.hideEdit && this.props.hideDelete ? '' : (
+                          {this.props.hideEdit && this.props.hideDelete ? (null) : (
                             <td>
 
                               <button type="button" className="btn btn-danger btn-block dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Acciones</button>

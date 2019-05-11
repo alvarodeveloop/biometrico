@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Instascan from 'instascan'
 import axios from 'axios'
+import { toast,ToastContainer } from 'react-toastify';
 let interval = null,
     scanner = null
 
@@ -56,12 +57,12 @@ class TakeAssist extends React.Component {
       }else{
         alert('El qr usado no es de asistencia')
       }*/
-      if(this.state.registrados.includes(16)){
-        alert('Se esta procesando su registro')
+      if(this.state.registrados.includes(content)){
+        toast.warning('Ya se esta procesando su registro!', {containerId: 'A'});
       }else{
 
         await this.setState({
-          registrados: [...this.state.registrados,16]
+          registrados: [...this.state.registrados,content]
         })
 
         document.getElementById('aviso').style.display = 'block'
@@ -75,10 +76,10 @@ class TakeAssist extends React.Component {
       if (cameras.length > 0) {
         scanner.start(cameras[0]);
       } else {
-        console.error('No cameras found.');
+        toast.error('No se detectaron camaras en el equipo!', {containerId: 'A'});
       }
     }).catch(function (e) {
-      console.error(e);
+      toast.error('Ha ocurrido un error, contacte con soporte!', {containerId: 'A'});
     });
 
   }
@@ -86,14 +87,14 @@ class TakeAssist extends React.Component {
   initInterval(){
 
     return setInterval( async () => {
-      console.log('aquirepiitiend')
+
       await this.setState({
         count: this.state.count - 1
       })
 
       if(this.state.count === 0){
         clearInterval(interval)
-        this.takeSnapshot(16)
+        this.takeSnapshot(3)
       }
 
     },1300)
@@ -131,9 +132,24 @@ class TakeAssist extends React.Component {
       })
       document.getElementById('aviso').style.display = 'none'
       document.getElementById('aviso1').style.display = 'none'
-      alert('Registro guardado')
+      toast.success('Registro Guardado!', {containerId: 'A'});
     }).catch(err => {
-      console.log(err)
+
+      document.getElementById('aviso').style.display = 'none'
+      document.getElementById('aviso1').style.display = 'none'
+
+      this.setState({
+        registrados: [],
+        count: 3
+      })
+
+      let res = err.response
+      if(res.data.error){
+        toast.error(res.data.error, {containerId: 'A'});
+      }else{
+        toast.error('No se guardo el registro, Conctacte con Soporte!', {containerId: 'A'});
+
+      }
     })
 
   }
@@ -191,6 +207,7 @@ class TakeAssist extends React.Component {
             </div>
           </div>
         </div>
+        <ToastContainer enableMultiContainer containerId={'A'} position={toast.POSITION.TOP_RIGHT} />
       </div>
     )
   }

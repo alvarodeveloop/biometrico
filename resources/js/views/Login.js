@@ -13,19 +13,7 @@ class Login extends Component {
 
   redirect(){
     const user = JSON.parse(localStorage.user)
-    console.log(user.id_perfil,'aquii')
-    switch (parseInt(user.id_perfil)) {
-      case 1:
-        this.props.history.push('/homeMaster')
-      break;
-      case 2:
-        this.props.history.push('/homeAdmin')
-      break;
-      case 3:
-          this.props.history.push('/home')
-      break;
-
-    }
+    this.props.history.push('/home')
   }
 
   render() {

@@ -72,7 +72,7 @@ class Trabajador extends React.Component{
             tbody_key={tbody_key}
             delete={this.delete}
             editRoute={editRoute}
-            pathImage="/images/trabajador/qrcode/"
+            pathImage="/images/trabajador/"
           />
         </div>
       </div>
