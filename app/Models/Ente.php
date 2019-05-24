@@ -24,7 +24,7 @@ class Ente extends Model
       }else{
         return self::join('users','users.id_ente','=','ente.id')
         ->select(
-          'ente.*','users.nombre','users.apellido','users.cedula',
+          'ente.*','ente as label','ente.id as value','users.nombre','users.apellido','users.cedula',
           'users.telefono','users.direccion','users.email'
         )
         ->where('users.id_perfil',2)

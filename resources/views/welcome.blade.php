@@ -13,6 +13,7 @@
     <body>
         <div id="root"></div>
         <script type="text/javascript" src="{{ asset('js/adapter.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/face-api.min.js') }}"></script>
         <script type="text/javascript" src="/js/app.js"></script>
 
     </body>

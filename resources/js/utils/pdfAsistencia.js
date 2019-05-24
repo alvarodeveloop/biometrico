@@ -119,7 +119,7 @@ export default (data,user) => {
 				}
 			};
 			var pdf = pdfMake.createPdf(docDefinition);
-			pdf.download('basics.pdf');
+			pdf.download('Asistencia.pdf');
 
 			resolved(true)
 

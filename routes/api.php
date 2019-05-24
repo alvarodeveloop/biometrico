@@ -39,6 +39,7 @@ Route::namespace('Api')->group(function(){
   Route::post('/departamento','DepartamentoController@store');
   Route::put('/departamento/{id}','DepartamentoController@update');
   Route::delete('/departamento/{id}','DepartamentoController@destroy');
+  Route::get('/departamento/by_ente/{id}','DepartamentoController@by_ente');
 
   Route::get('/cargo','CargoController@index');
   Route::get('/cargo/{id}','CargoController@show');
@@ -57,6 +58,7 @@ Route::namespace('Api')->group(function(){
   Route::post('/trabajador','TrabajadorController@store');
   Route::put('/trabajador/{id}','TrabajadorController@update');
   Route::delete('/trabajador/{id}','TrabajadorController@destroy');
+  Route::get('/trabajador/by_departamento/{id}','TrabajadorController@by_departamento');
 
   Route::get('/asistencia','AsistenciaController@index');
   Route::get('/asistencia/{id}','AsistenciaController@show');

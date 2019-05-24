@@ -59,4 +59,9 @@ class DepartamentoController extends Controller
       User::where('id_departamento',$id)->delete();
       return response()->json([],200);
     }
+
+    public function by_ente($id_ente){
+      $depar = Departamento::get($id_ente);
+      return response()->json($depar,200);
+    }
 }

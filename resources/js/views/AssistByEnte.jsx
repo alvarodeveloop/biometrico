@@ -8,9 +8,16 @@ class AssistByEnte extends React.Component {
 
   render () {
     return(
-      <Asistencia
-        idEnte={this.props.match.params.id}
-      />
+      <div className="">
+        <div className="row">
+          <div className="col-md-12 col-sm-12">
+            <h4 className="alert alert-info text-center">Este módulo muestra de primero las asistencia del día de hoy.</h4>
+          </div>
+        </div>
+        <Asistencia
+          idEnte={this.props.match.params.id}
+          />
+      </div>
     )
   }
 }

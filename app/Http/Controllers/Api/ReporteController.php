@@ -17,14 +17,16 @@ class ReporteController extends Controller
       $trabajador = $request->id_trabajador;
       $status = $request->status;
       $llegada = $request->llegada;
+      $ente = $request->id_ente;
+      $departamento = $request->id_departamento;
 
       $user = JWTAuth::user();
       if($user->id_perfil === 2){
-        $asis = Asistencia::get($user->id_ente,null,$trabajador,$desde,$hasta,null,$status,$llegada);
+        $asis = Asistencia::get($user->id_ente,$departamento,$trabajador,$desde,$hasta,null,$status,$llegada);
       }elseif($user->id_perfil === 3){
         $asis = Asistencia::get($user->id_ente,$user->id_departamento,$trabajador,$desde,$hasta,null,$status,$llegada);
       }else{
-        $asis = Asistencia::get(null,null,$trabajador,$desde,$hasta,null,$status,$llegada);
+        $asis = Asistencia::get($ente,$departamento,$trabajador,$desde,$hasta,null,$status,$llegada);
       }
       return response()->json($asis,200);
     }

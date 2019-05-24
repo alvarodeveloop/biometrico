@@ -122,4 +122,17 @@ class TrabajadorController extends Controller
       Trabajador::destroy($id);
       return response()->json([],200);
     }
+
+    public function by_departamento($id_depar){
+
+      $sql = "trabajador.*,CONCAT(trabajador.nombre,' ',trabajador.apellido) as label,
+      trabajador.id as value,
+                (SELECT turno from turno where id = trabajador.id_turno) as turno,
+                (SELECT cargo from cargo where id = trabajador.id_cargo) as cargo";
+      $worker = Trabajador::select(DB::raw($sql))->
+                where('id_departamento',$id_depar)
+                ->get();
+      return response()->json($worker,200);
+
+    }
 }

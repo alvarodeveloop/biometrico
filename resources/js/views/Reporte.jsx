@@ -11,6 +11,8 @@ class Reporte extends React.Component {
     super(props)
 
     this.state = {
+      id_ente : "",
+      id_departamento : "",
       desde: "",
       hasta: "",
       id_trabajador: "",
@@ -18,21 +20,23 @@ class Reporte extends React.Component {
       llegada: "",
       optionTrabajador: [],
       optionStatus: [
-        {  value: '', label: 'Todos' },
         {  value: 0, label: 'Temprano' },
         {  value: 1, label: 'Normal' },
         {  value: 2, label: 'Tarde' },
       ],
       optionLlegada: [
-        {  value: '', label: 'Todos' },
         {  value: false, label: 'Entrada' },
         {  value: true, label: 'Salida' },
       ],
       showAdvice: false,
-      texto: "Generar"
+      texto: "Generar",
+      optionEnte : [],
+      optionDepartamento: [],
+      user: JSON.parse(localStorage.user)
     }
 
     this.onChange = this.onChange.bind(this)
+    this.onChangeSelect = this.onChangeSelect.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
 
   }
@@ -80,24 +84,79 @@ class Reporte extends React.Component {
   }
 
   componentWillMount(){
-    axios.get('/api/trabajador').then(res => {
+    let user = this.state.user
+    let promises
+    let actualice
+    if(user.id_perfil === 1){
+      actualice = 'optionEnte'
 
-      if(res.data.length > 0){
-        res.data.unshift(
-          {  value: '', label: 'Todos' },
-        )
+       promises = [
+        axios.get('/api/ente'),
+      ]
+    }else if(user.id_perfil === 2){
+      actualice = 'optionDepartamento'
+      promises =[
+       axios.get('/api/departamento'),
+     ]
+   }else{
+     actualice = 'optionTrabajador'
+     promises = [
+      axios.get('/api/trabajador'),
+    ]
+   }
+
+   Promise.all(promises).then(res => {
+     this.setState({
+       [actualice]: res[0].data,
+     })
+   })
+  }
+
+  onChangeSelect(e){
+    let id = e.target.id
+    let value = e.target.value
+    if(id === "id_ente"){
+      if(value !== ""){
+        axios.get('/api/departamento/by_ente/'+value).then(res => {
+
+          this.setState({
+            [id] : value,
+            optionDepartamento: res.data
+          });
+        })
+      }else{
+        this.setState({
+          [id] : value,
+          id_departamento: "",
+          optionDepartamento: []
+        });
       }
+    }else if(id === "id_departamento"){
+      if(value !== ""){
+        axios.get('/api/trabajador/by_departamento/'+value).then(res => {
 
-      this.setState({
-        optionTrabajador: res.data
-      });
-    }).catch(err => {
-      console.log(err)
-    })
+          this.setState({
+            [id] : value,
+            optionTrabajador: res.data
+          });
+        })
+      }else{
+        this.setState({
+          [id] : value,
+          id_trabajador: "",
+          optionTrabajador: []
+        });
+      }
+    }
   }
 
   render () {
-    const { optionStatus,desde,hasta,id_trabajador,status,optionTrabajador, optionLlegada, llegada } = this.state
+    const { optionStatus,desde,hasta,id_trabajador,
+          status,optionTrabajador,
+          optionLlegada, llegada,
+          id_ente,id_departamento,
+          optionEnte, optionDepartamento,user
+         } = this.state
 
     return(
       <div className="card">
@@ -128,15 +187,15 @@ class Reporte extends React.Component {
             </div>
             <div className="row">
               <FormGroup
-                id="id_trabajador"
+                id="llegada"
                 cols="col-md-6 col-sm-6"
                 type="select"
-                label="Trabajador"
+                label="Tipo"
                 requerido={false}
                 onChange={this.onChange}
-                value={id_trabajador}
-                options={optionTrabajador}
-                />
+                value={llegada}
+                options={optionLlegada}
+              />
               <FormGroup
                 id="status"
                 cols="col-md-6 col-sm-6"
@@ -148,16 +207,55 @@ class Reporte extends React.Component {
                 options={optionStatus}
                 />
             </div>
+            {user.id_perfil == 1 ? (
+              <div className="row">
+                <FormGroup
+                  id="id_ente"
+                  cols="col-md-6 col-sm-6"
+                  type="select"
+                  label="Ente"
+                  requerido={false}
+                  onChange={this.onChangeSelect}
+                  value={id_ente}
+                  options={optionEnte}
+
+                  />
+
+                  <FormGroup
+                    id="id_departamento"
+                    cols="col-md-6 col-sm-6"
+                    type="select"
+                    label="Departamento"
+                    requerido={false}
+                    onChange={this.onChangeSelect}
+                    value={id_departamento}
+                    options={optionDepartamento}
+                    />
+                </div>
+            ) : user.id_perfil < 3 ? (
+              <div className="row">
+                <FormGroup
+                  id="id_departamento"
+                  cols="col-md-12 col-sm-12"
+                  type="select"
+                  label="Departamento"
+                  requerido={false}
+                  onChange={this.onChangeSelect}
+                  value={id_departamento}
+                  options={optionDepartamento}
+                />
+              </div>
+            ) : (null)}
             <div className="row">
               <FormGroup
-                id="llegada"
-                cols="col-md-6 col-sm-6"
+                id="id_trabajador"
+                cols="col-md-12 col-sm-12"
                 type="select"
-                label="Tipo"
+                label="Trabajador"
                 requerido={false}
                 onChange={this.onChange}
-                value={llegada}
-                options={optionLlegada}
+                value={id_trabajador}
+                options={optionTrabajador}
                 />
             </div>
             <div className="row">

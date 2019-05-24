@@ -3,8 +3,11 @@ import PropTypes from 'prop-types'
 import Instascan from 'instascan'
 import axios from 'axios'
 import { toast,ToastContainer } from 'react-toastify';
+import transformImage from '../utils/transformImage'
+
 let interval = null,
     scanner = null
+const MODEL_URL = '/models'
 
 class TakeAssist extends React.Component {
 
@@ -21,7 +24,7 @@ class TakeAssist extends React.Component {
     this.initInterval = this.initInterval.bind(this)
   }
 
-  componentDidMount(){
+  async componentDidMount(){
 
     var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
@@ -41,22 +44,21 @@ class TakeAssist extends React.Component {
        document.getElementById("line1").style.visibility = "visible";
      }
 
+     await faceapi.loadSsdMobilenetv1Model(MODEL_URL)
+     await faceapi.loadFaceLandmarkModel(MODEL_URL)
+     await faceapi.loadFaceRecognitionModel(MODEL_URL)
      this.initScan()
 
   }
 
-  initScan(){
+  async initScan(){
 
-    scanner = new Instascan.Scanner({
+    /*scanner = new Instascan.Scanner({
       video: document.getElementById('preview') ,
     });
 
     scanner.addListener('scan', async content => {
-      /*if(!isNaN(content)){
-        this.takeSnapshot(content)
-      }else{
-        alert('El qr usado no es de asistencia')
-      }*/
+
       if(this.state.registrados.includes(content)){
         toast.warning('Ya se esta procesando su registro!', {containerId: 'A'});
       }else{
@@ -67,7 +69,7 @@ class TakeAssist extends React.Component {
 
         document.getElementById('aviso').style.display = 'block'
 
-        interval = this.initInterval()
+        interval = this.initInterval(content)
       }
 
     });
@@ -80,8 +82,66 @@ class TakeAssist extends React.Component {
       }
     }).catch(function (e) {
       toast.error('Ha ocurrido un error, contacte con soporte!', {containerId: 'A'});
-    });
+    });*/
 
+    console.log('aqui')
+
+    const input = document.getElementById('my_image')
+    let fullFaceDescriptions = await faceapi.detectAllFaces(input).withFaceLandmarks().withFaceDescriptors()
+    console.log('aqui1')
+    fullFaceDescriptions = faceapi.resizeResults(fullFaceDescriptions,{width: input.width, height: input.height})
+    console.log('aqui2')
+    let canvas = document.getElementById('my_canvas')
+    faceapi.draw.drawDetections(canvas, fullFaceDescriptions)
+
+    console.log('aqui3')
+    console.log('aqui empieza la detedciipin')
+
+    const labels = ['howard']
+
+    let promise = await Promise.all(
+      labels.map(async label => {
+        let imgUrl = '../../../images/'+label+'.png'
+        let img =  await faceapi.fetchImage(imgUrl)
+        return img
+      })
+    )
+
+    console.log(promise,'aqui la promesa 1')
+    let promises2 = await Promise.all(
+          promise.map(async (v,i) =>{
+            return await faceapi.detectSingleFace(v).withFaceLandmarks().withFaceDescriptor()
+          })
+        )
+
+    let promise3 = await Promise.all(
+      promises2.map((v,i) => {
+
+        let fullFaceDescription = v
+        if (!fullFaceDescription) {
+          throw new Error(`no faces detected for ${labels[i]}`)
+        }
+
+        let faceDescriptors = [fullFaceDescription.descriptor]
+
+        return new faceapi.LabeledFaceDescriptors(labels[i], faceDescriptors)
+
+      })
+    )
+    console.log('aqui empieza el dibujado')
+    const maxDescriptorDistance = 0.6
+    const faceMatcher = new faceapi.FaceMatcher(promise3, maxDescriptorDistance)
+
+    const results = fullFaceDescriptions.map(fd => faceMatcher.findBestMatch(fd.descriptor))
+
+    results.forEach((bestMatch, i) => {
+      const box = fullFaceDescriptions[i].detection.box
+      const text = bestMatch.toString()
+      const drawBox = new faceapi.draw.DrawBox(box, { label: text })
+      drawBox.draw(canvas)
+    })
+
+    console.log('finished')
   }
 
   initInterval(){
@@ -94,7 +154,7 @@ class TakeAssist extends React.Component {
 
       if(this.state.count === 0){
         clearInterval(interval)
-        this.takeSnapshot(3)
+        this.takeSnapshot(content)
       }
 
     },1300)
@@ -166,6 +226,12 @@ class TakeAssist extends React.Component {
 
     return(
       <div className="row">
+        <div className="col-md-12 co-sm-12">
+          <img src="/images/faces.jpg" id="my_image" width="100%" />
+          <canvas id="my_canvas" style={{ position:'absolute', top: '0px', left: '15px'}} width="1110px" height="624px"></canvas>
+        </div>
+      </div>
+      /*<div className="row">
         <div className="col-md-12 col-sm-12">
           <div className="card">
             <div className="card-header">
@@ -208,7 +274,7 @@ class TakeAssist extends React.Component {
           </div>
         </div>
         <ToastContainer enableMultiContainer containerId={'A'} position={toast.POSITION.TOP_RIGHT} />
-      </div>
+      </div>*/
     )
   }
 }

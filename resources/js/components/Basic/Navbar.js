@@ -3,7 +3,7 @@ import { Link, NavLink, Redirect } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { logout } from '../../action/Auth'
-import setAuthorizationToken from '../../utils/setAuthorizationToken'
+import logoutSystem from  '../../utils/logout'
 import axios from 'axios'
 
 class Navbar extends React.Component{
@@ -16,12 +16,7 @@ class Navbar extends React.Component{
 
   cerrarSesion(e){
     e.preventDefault()
-    localStorage.removeItem('token')
-    axios.post('/api/auth/logout').then(res => {
-      setAuthorizationToken(null)
-      this.props.logout()
-    })
-
+    logoutSystem(this.props.logout)
   }
 
   makeNavbars(id_perfil){
@@ -76,13 +71,6 @@ class Navbar extends React.Component{
             <NavLink to="/ente" className="nav-link">
               <i className="fas fa-building"></i>
               Registrar Ente
-              <span className="bot-line"></span>
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink to="/trabajador" className="nav-link">
-              <i className="fas fa-user"></i>
-              Reportes
               <span className="bot-line"></span>
             </NavLink>
           </li>

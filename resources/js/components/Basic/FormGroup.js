@@ -16,15 +16,15 @@ class FormGroup extends React.Component{
       <div className={'form-group '+cols}>
         <label className="form-control-label">{ label }</label>
         {type === 'textarea' ? (
-          <textarea className="form-control" id={id} required={requerido} onChange={onChange} value={value}>
+          <textarea className="form-control" id={id} required={requerido} onChange={onChange} value={value} disabled={disabled}>
           </textarea>
         ) : type === 'select' ? (
-          <select id={id} onChange={onChange} value={value} options={options} className="form-control" required={requerido}>
-            <option value="" disabled>--Seleccione--</option>
+          <select id={id} onChange={onChange} value={value} options={options} className="form-control" required={requerido} disabled={disabled}>
+            <option value="">--Seleccione--</option>
             {options.map((v,k) => <option key={k} value={v.value}>{v.label}</option> ) }
           </select>
         ) : (
-          <input id={id} type={type} required={requerido} onChange={onChange} className="form-control" value={value} />
+          <input id={id} type={type} required={requerido} onChange={onChange} className="form-control" value={value} disabled={disabled} />
         )}
       </div>
     )
@@ -39,7 +39,8 @@ FormGroup.propTypes = {
   requerido: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
   value: PropTypes.string || PropTypes.number,
-  options: PropTypes.array
+  options: PropTypes.array,
+  disabled: PropTypes.bool,
 }
 
 export default FormGroup

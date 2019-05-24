@@ -186,7 +186,8 @@ class AsistenciaController extends Controller
     }
 
     public function asistencia_by_ente($ente){
-      $asis = Asistencia::get($ente);
+      $hoy = date('Y-m-d');
+      $asis = Asistencia::get($ente,null,null,null,null,$hoy);
       return response()->json($asis,200);
     }
 }

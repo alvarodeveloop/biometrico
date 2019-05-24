@@ -19,7 +19,7 @@ class Departamento extends Model
 
       return self::join('users','users.id_departamento','=','departamento.id')
       ->select(
-        'departamento.*','users.nombre','users.apellido','users.cedula',
+        'departamento.*','departamento as label','departamento.id as value','users.nombre','users.apellido','users.cedula',
         'users.telefono','users.direccion','users.email'
       )
       ->whereRaw($where)
