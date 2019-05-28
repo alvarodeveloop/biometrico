@@ -55,7 +55,6 @@ class TrabajadorController extends Controller
         $image = $request->imagen;
         $name_image = time().'.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
         \Image::make($request->imagen)->save(public_path('images/trabajador/').$name_image);
-
       }
 
       $trabajador->imagen = $name_image;
