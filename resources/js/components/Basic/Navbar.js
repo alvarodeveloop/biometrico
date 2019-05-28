@@ -178,15 +178,6 @@ class Navbar extends React.Component{
             </NavLink>
           </li>
         </ul>
-        <ul className="navbar-nav ml-auto">
-          <li className="nav-item">
-            <NavLink to="/recuperar_contra" className="nav-link">
-              <i className="fas fa-user"></i>
-              Recuperar Contraseña
-              <span className="bot-line"></span>
-            </NavLink>
-          </li>
-        </ul>
       </nav>
 
     )
@@ -234,3 +225,13 @@ function mapDispatchToProps(){
 }
 
 export default connect(mapStateToProps,mapDispatchToProps())(Navbar)
+
+/*<ul className="navbar-nav ml-auto">
+  <li className="nav-item">
+    <NavLink to="/recuperar_contra" className="nav-link">
+      <i className="fas fa-user"></i>
+      Recuperar Contraseña
+      <span className="bot-line"></span>
+    </NavLink>
+  </li>
+</ul>*/
