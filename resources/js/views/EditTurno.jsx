@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import axios from 'axios'
 import FormGroup from '../../components/Basic/FormGroup'
+import Spinner from '../components/Basic/Spinner'
 import { Button } from 'reactstrap'
 
 class EditTurno extends React.Component {
@@ -13,6 +14,7 @@ class EditTurno extends React.Component {
       turno: "",
       desde: "",
       hasta: "",
+      loading: true
     }
 
     this.onChange = this.onChange.bind(this)
@@ -42,7 +44,11 @@ class EditTurno extends React.Component {
   }
 
   componentDidMount(){
-    axios.get('/api/turno/'+this.props.match.params.id).then(res => {
+    axios.get('/api/turno/'+this.props.match.params.id).then(async res => {
+      await this.setState({
+        loading : false
+      });
+
       Object.keys(this.state).forEach((v,i) => {
         this.setState({
           [v]: res.data[v]
@@ -54,56 +60,64 @@ class EditTurno extends React.Component {
   }
 
   render () {
-    const {turno,desde,hasta} = this.state
+    const {loading,turno,desde,hasta} = this.state
     return(
-      <div className="card">
-        <div className="card-header">
-          <h5 className="card-tilte">Editar Turno</h5>
+      {loading ? (
+        <div className="container">
+          <div className="row justify-content-center align-self-center" style={{ marginTop : '200px'}}>
+            <Spinner loading={loading} />
+          </div>
         </div>
-        <div className="card-body">
-          <form onSubmit={this.onSubmit}>
-            <div className="row">
-              <FormGroup
-                cols="col-md-6 col-sm-6"
-                id="turno"
-                type="text"
-                label="Nombre Turno"
-                requerido={true}
-                onChange={this.onChange}
-                value={turno}
-              />
-            </div>
-            <div className="row">
-              <FormGroup
-                cols="col-md-6 col-sm-6"
-                id="desde"
-                type="time"
-                label="Desde"
-                requerido={true}
-                onChange={this.onChange}
-                value={desde}
-              />
-              <FormGroup
-                cols="col-md-6 col-sm-6"
-                id="hasta"
-                type="time"
-                label="Hasta"
-                requerido={true}
-                onChange={this.onChange}
-                value={hasta}
-              />
-            </div>
-            <div className="row">
-              <div className="col-md-3 col-sm-3 offset-md-3 offset-sm-3">
-                <Button color="secondary" type="button" onClick={this.returnBackOnClick} block>Volver</Button>
+      ) : (
+        <div className="card">
+          <div className="card-header">
+            <h5 className="card-tilte">Editar Turno</h5>
+          </div>
+          <div className="card-body">
+            <form onSubmit={this.onSubmit}>
+              <div className="row">
+                <FormGroup
+                  cols="col-md-6 col-sm-6"
+                  id="turno"
+                  type="text"
+                  label="Nombre Turno"
+                  requerido={true}
+                  onChange={this.onChange}
+                  value={turno}
+                />
               </div>
-              <div className="col-md-3 col-sm-3">
-                <Button type="submit" color="primary" block>Editar</Button>
+              <div className="row">
+                <FormGroup
+                  cols="col-md-6 col-sm-6"
+                  id="desde"
+                  type="time"
+                  label="Desde"
+                  requerido={true}
+                  onChange={this.onChange}
+                  value={desde}
+                />
+                <FormGroup
+                  cols="col-md-6 col-sm-6"
+                  id="hasta"
+                  type="time"
+                  label="Hasta"
+                  requerido={true}
+                  onChange={this.onChange}
+                  value={hasta}
+                />
               </div>
-            </div>
-          </form>
+              <div className="row">
+                <div className="col-md-3 col-sm-3 offset-md-3 offset-sm-3">
+                  <Button color="secondary" type="button" onClick={this.returnBackOnClick} block>Volver</Button>
+                </div>
+                <div className="col-md-3 col-sm-3">
+                  <Button type="submit" color="primary" block>Editar</Button>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
     )
   }
 }

@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import FormGroup from '../components/Basic/FormGroup'
+import Spinner from '../components/Basic/Spinner'
 import axios from 'axios'
 import pdfMake from '../utils/pdfAsistencia'
 
@@ -32,7 +33,8 @@ class Reporte extends React.Component {
       texto: "Generar",
       optionEnte : [],
       optionDepartamento: [],
-      user: JSON.parse(localStorage.user)
+      user: JSON.parse(localStorage.user),
+      loading: true,
     }
 
     this.onChange = this.onChange.bind(this)
@@ -105,7 +107,11 @@ class Reporte extends React.Component {
     ]
    }
 
-   Promise.all(promises).then(res => {
+   Promise.all(promises).then(async res => {
+     await this.setState({
+       loading : false
+     });
+
      this.setState({
        [actualice]: res[0].data,
      })
@@ -155,125 +161,137 @@ class Reporte extends React.Component {
           status,optionTrabajador,
           optionLlegada, llegada,
           id_ente,id_departamento,
-          optionEnte, optionDepartamento,user
+          optionEnte, optionDepartamento,user,
+          loading
          } = this.state
 
     return(
-      <div className="card">
-        <div className="card-header">
-          <h3>Reporte de Asistencias</h3>
-        </div>
-        <div className="card-body">
-          <form onSubmit={this.onSubmit}>
-            <div className="row">
-              <FormGroup
-                id="desde"
-                cols="col-md-6 col-sm-6"
-                type="date"
-                label="Desde"
-                requerido={false}
-                onChange={this.onChange}
-                value={desde}
-                />
-              <FormGroup
-                id="hasta"
-                cols="col-md-6 col-sm-6"
-                type="date"
-                label="Hasta"
-                requerido={false}
-                onChange={this.onChange}
-                value={hasta}
-                />
+      <div>
+        {loading ? (
+          <div className="container">
+            <div className="row justify-content-center align-self-center" style={{ marginTop : '200px'}}>
+              <Spinner loading={loading} />
             </div>
-            <div className="row">
-              <FormGroup
-                id="llegada"
-                cols="col-md-6 col-sm-6"
-                type="select"
-                label="Tipo"
-                requerido={false}
-                onChange={this.onChange}
-                value={llegada}
-                options={optionLlegada}
-              />
-              <FormGroup
-                id="status"
-                cols="col-md-6 col-sm-6"
-                type="select"
-                label="Estatus"
-                requerido={false}
-                onChange={this.onChange}
-                value={status}
-                options={optionStatus}
-                />
+          </div>
+        ) : (
+          <div className="card">
+            <div className="card-header">
+              <h3>Reporte de Asistencias</h3>
             </div>
-            {user.id_perfil == 1 ? (
-              <div className="row">
-                <FormGroup
-                  id="id_ente"
-                  cols="col-md-6 col-sm-6"
-                  type="select"
-                  label="Ente"
-                  requerido={false}
-                  onChange={this.onChangeSelect}
-                  value={id_ente}
-                  options={optionEnte}
-
-                  />
-
+            <div className="card-body">
+              <form onSubmit={this.onSubmit}>
+                <div className="row">
                   <FormGroup
-                    id="id_departamento"
+                    id="desde"
                     cols="col-md-6 col-sm-6"
-                    type="select"
-                    label="Departamento"
+                    type="date"
+                    label="Desde"
                     requerido={false}
-                    onChange={this.onChangeSelect}
-                    value={id_departamento}
-                    options={optionDepartamento}
+                    onChange={this.onChange}
+                    value={desde}
+                    />
+                  <FormGroup
+                    id="hasta"
+                    cols="col-md-6 col-sm-6"
+                    type="date"
+                    label="Hasta"
+                    requerido={false}
+                    onChange={this.onChange}
+                    value={hasta}
                     />
                 </div>
-            ) : user.id_perfil < 3 ? (
-              <div className="row">
-                <FormGroup
-                  id="id_departamento"
-                  cols="col-md-12 col-sm-12"
-                  type="select"
-                  label="Departamento"
-                  requerido={false}
-                  onChange={this.onChangeSelect}
-                  value={id_departamento}
-                  options={optionDepartamento}
-                />
-              </div>
-            ) : (null)}
-            <div className="row">
-              <FormGroup
-                id="id_trabajador"
-                cols="col-md-12 col-sm-12"
-                type="select"
-                label="Trabajador"
-                requerido={false}
-                onChange={this.onChange}
-                value={id_trabajador}
-                options={optionTrabajador}
-                />
+                <div className="row">
+                  <FormGroup
+                    id="llegada"
+                    cols="col-md-6 col-sm-6"
+                    type="select"
+                    label="Tipo"
+                    requerido={false}
+                    onChange={this.onChange}
+                    value={llegada}
+                    options={optionLlegada}
+                  />
+                  <FormGroup
+                    id="status"
+                    cols="col-md-6 col-sm-6"
+                    type="select"
+                    label="Estatus"
+                    requerido={false}
+                    onChange={this.onChange}
+                    value={status}
+                    options={optionStatus}
+                    />
+                </div>
+                {user.id_perfil == 1 ? (
+                  <div className="row">
+                    <FormGroup
+                      id="id_ente"
+                      cols="col-md-6 col-sm-6"
+                      type="select"
+                      label="Ente"
+                      requerido={false}
+                      onChange={this.onChangeSelect}
+                      value={id_ente}
+                      options={optionEnte}
+
+                      />
+
+                      <FormGroup
+                        id="id_departamento"
+                        cols="col-md-6 col-sm-6"
+                        type="select"
+                        label="Departamento"
+                        requerido={false}
+                        onChange={this.onChangeSelect}
+                        value={id_departamento}
+                        options={optionDepartamento}
+                        />
+                    </div>
+                ) : user.id_perfil < 3 ? (
+                  <div className="row">
+                    <FormGroup
+                      id="id_departamento"
+                      cols="col-md-12 col-sm-12"
+                      type="select"
+                      label="Departamento"
+                      requerido={false}
+                      onChange={this.onChangeSelect}
+                      value={id_departamento}
+                      options={optionDepartamento}
+                    />
+                  </div>
+                ) : (null)}
+                <div className="row">
+                  <FormGroup
+                    id="id_trabajador"
+                    cols="col-md-12 col-sm-12"
+                    type="select"
+                    label="Trabajador"
+                    requerido={false}
+                    onChange={this.onChange}
+                    value={id_trabajador}
+                    options={optionTrabajador}
+                    />
+                </div>
+                <div className="row">
+                  <div className="col-md-6 col-sm-6 offset-md-3 offset-sm-3">
+                    <button type="submit" className="btn btn-primary btn-block">{this.state.texto}</button>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-12 col-sm-12">
+                    <br/>
+                    {this.state.showAdvice ? (
+                      <p className="text-center alert alert-danger">No hay datos para el reporte</p>
+                    ) : ''}
+                  </div>
+                </div>
+              </form>
             </div>
-            <div className="row">
-              <div className="col-md-6 col-sm-6 offset-md-3 offset-sm-3">
-                <button type="submit" className="btn btn-primary btn-block">{this.state.texto}</button>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-12 col-sm-12">
-                <br/>
-                {this.state.showAdvice ? (
-                  <p className="text-center alert alert-danger">No hay datos para el reporte</p>
-                ) : ''}
-              </div>
-            </div>
-          </form>
-        </div>
+          </div>
+        )}
       </div>
+
 
     )
   }

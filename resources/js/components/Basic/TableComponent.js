@@ -12,6 +12,7 @@ class TableComponent extends React.Component{
 
     this.onChange = this.onChange.bind(this)
     this.handleModalOpen = this.handleModalOpen.bind(this)
+    this.handleTakePicture = this.handleTakePicture.bind(this)
   }
 
   onChange(e){
@@ -20,6 +21,10 @@ class TableComponent extends React.Component{
 
   handleModalOpen(id){
     this.props.modalOpen(id)
+  }
+
+  handleTakePicture(tr){
+    this.props.handleTakePicture(tr)
   }
 
   render(){
@@ -115,6 +120,10 @@ class TableComponent extends React.Component{
                                   <Link to={this.props.editRoute+v.id} className="dropdown-item">Editar</Link>
                                 )}
 
+                                {!this.props.isWorker ? '' : (
+                                  <Link to={'/takePicture/'+v.id} className="dropdown-item">Tomar Foto</Link>
+                                )}
+
                                 {this.props.hideDelete ? '' : (
                                   <a className="dropdown-item" href="javascript:void(0)" onClick={() => this.handleModalOpen(v.id)}>Eliminar</a>
                                 )}
@@ -160,6 +169,7 @@ TableComponent.propTypes = {
   pathImage: PropTypes.string,
   hideEdit: PropTypes.bool,
   hideDelete: PropTypes.bool,
+  isWorker: PropTypes.bool
 }
 
 export default Pagination(TableComponent)

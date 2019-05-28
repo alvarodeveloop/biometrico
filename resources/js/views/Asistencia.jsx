@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import WrappedTableAssist from '../components/Basic/WrappedTableAssist'
 import axios from 'axios'
+import Spinner from '../components/Basic/Spinner'
 
 class Asistencia extends React.Component {
   constructor(props){
@@ -32,7 +33,8 @@ class Asistencia extends React.Component {
       ],
       tbody: [],
       id_worker: null,
-      id_ente: null
+      id_ente: null,
+      loading: true
     }
 
     this.get = this.get.bind(this)
@@ -63,31 +65,48 @@ class Asistencia extends React.Component {
       route = '/api/asistencia'
     }
 
-    axios.get(route).then(res => {
+    axios.get(route).then(async res => {
+
+      await this.setState({
+        loading:  false
+      });
+
       this.setState({
-        tbody: res.data
+        tbody: res.data,
       })
+
     }).catch(({response}) => {
       alert(response.data.error)
     })
   }
 
   getByCedula(cedulaWorker){
-    axios.get('/api/asistencia_by_cedula/'+cedulaWorker).then(res => {
+    axios.get('/api/asistencia_by_cedula/'+cedulaWorker).then(async res => {
+
+      await this.setState({
+        loading : false
+      });
+
       this.setState({
         tbody: res.data.asis,
-        id_worker: res.data.id_worker
+        id_worker: res.data.id_worker,
       })
+
     }).catch(({response}) => {
       alert(response.data.error)
     })
   }
 
   getByEnte(ente){
-    axios.get('/api/asistencia_by_ente/'+ente).then(res => {
+    axios.get('/api/asistencia_by_ente/'+ente).then(async res => {
+
+      await this.setState({
+        loading : false
+      });
+
       this.setState({
         tbody: res.data,
-        id_ente: ente
+        id_ente: ente,
       })
     }).catch(({response}) => {
       alert(response.data.error)
@@ -97,29 +116,42 @@ class Asistencia extends React.Component {
   searchByPeriod(data){
     data.id_ente = this.state.id_ente
     data.id_worker = this.state.id_worker
-    axios.post('/api/asistencia_filter',data).then(res =>{
+    axios.post('/api/asistencia_filter',data).then(async res =>{
+
+      await this.setState({
+        loading : false
+      });
+
       this.setState({
-        tbody: res.data
+        tbody: res.data,
       })
     })
   }
 
   render () {
-    const {thead,tbody,tbody_key} = this.state
+    const {thead,tbody,tbody_key,loading} = this.state
 
     return(
 
       <div className="row">
-        <WrappedTableAssist
-          cols="col-md-12 col-sm-12"
-          thead={thead}
-          tbody_original={tbody}
-          tbody_key={tbody_key}
-          pathImage="/images/asistencia/"
-          pathImageTrabajador="/images/trabajador/"
-          searchByPeriod={this.searchByPeriod}
-          hideFilter={this.props.hideFilter}
-        />
+        {loading ? (
+          <div className="container">
+            <div className="row justify-content-center align-self-center" style={{ marginTop : '200px'}}>
+              <Spinner loading={loading} />
+            </div>
+          </div>
+        ) : (
+          <WrappedTableAssist
+            cols="col-md-12 col-sm-12"
+            thead={thead}
+            tbody_original={tbody}
+            tbody_key={tbody_key}
+            pathImage="/images/asistencia/"
+            pathImageTrabajador="/images/trabajador/"
+            searchByPeriod={this.searchByPeriod}
+            hideFilter={this.props.hideFilter}
+            />
+        )}
       </div>
     )
   }

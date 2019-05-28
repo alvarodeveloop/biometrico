@@ -28,7 +28,6 @@ class AsistenciaController extends Controller
     public function store(Request $request){
       $userToken = JWTAuth::user();
 
-
         //determinar el tipo de registro, si es entrada o salida
         $typeRegister = Asistencia::determinatedTypeRegister($request->id_trabajador);
         //crear el objeto de registro

@@ -23,8 +23,6 @@ class WrappedTable extends React.Component {
     this.handleDelete = this.handleDelete.bind(this)
     this.handleOpenModal = this.handleOpenModal.bind(this)
     this.closeModal = this.closeModal.bind(this)
-
-
   }
 
   componentWillReceiveProps(nextProps){
@@ -56,6 +54,7 @@ class WrappedTable extends React.Component {
     this.props.delete(this.state.idDelete)
   }
 
+
   render(){
     const { pathImage, tbody, filterQuery, indexSortable, orderSortable, itemsPerPage } = this.state
 
@@ -75,6 +74,7 @@ class WrappedTable extends React.Component {
             pathImage={this.props.pathImage}
             hideEdit={this.props.hideEdit}
             hideDelete={this.props.hideDelete}
+            isWorker={this.props.isWorker}
             />
 
           <ModalDelete
@@ -98,6 +98,7 @@ WrappedTable.propTypes = {
   pathImage: PropTypes.string,
   hideEdit: PropTypes.bool,
   hideDelete: PropTypes.bool,
+  isWorker: PropTypes.bool
 }
 
 export default WrappedTable

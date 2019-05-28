@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import WrappedTable from '../components/Basic/WrappedTable'
 import ConfigForm from '../components/form/ConfigForm'
+import Spinner from '../components/Basic/Spinner'
 import axios from 'axios'
 
 class Config extends React.Component {
@@ -31,7 +32,12 @@ class Config extends React.Component {
   }
 
   get(){
-    axios.get('/api/config').then(res => {
+    axios.get('/api/config').then(async res => {
+
+      await this.setState({
+        loading: false
+      });
+
       this.setState({
         tbody: res.data
       })
@@ -41,7 +47,11 @@ class Config extends React.Component {
   }
 
   delete(id){
-    axios.delete('/api/config/'+id).then(res => {
+    axios.delete('/api/config/'+id).then(async res => {
+      await this.setState({
+        loading: true
+      });
+
       this.get()
     }).catch(({response}) => {
       alert(response.data.error)
@@ -49,23 +59,33 @@ class Config extends React.Component {
   }
 
   render () {
-    const {thead,tbody,tbody_key,editRoute} = this.state
+    const {loading,thead,tbody,tbody_key,editRoute} = this.state
 
     return(
       <div>
-        <ConfigForm get={this.get} />
-        <br/>
-        <div className="row">
-          <WrappedTable
-            cols="col-md-12 col-sm-12"
-            thead={thead}
-            tbody_original={tbody}
-            tbody_key={tbody_key}
-            delete={this.delete}
-            editRoute={editRoute}
-            hideEdit={true}
-          />
-        </div>
+        {loading ? (
+          <div className="container">
+            <div className="row justify-content-center align-self-center" style={{ marginTop : '200px'}}>
+              <Spinner loading={loading} />
+            </div>
+          </div>
+        ) : (
+          <div>
+            <ConfigForm get={this.get} />
+            <br/>
+            <div className="row">
+              <WrappedTable
+                cols="col-md-12 col-sm-12"
+                thead={thead}
+                tbody_original={tbody}
+                tbody_key={tbody_key}
+                delete={this.delete}
+                editRoute={editRoute}
+                hideEdit={true}
+                />
+            </div>
+          </div>
+        )}
       </div>
     )
   }

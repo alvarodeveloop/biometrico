@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import FormGroup from '../components/Basic/FormGroup'
+import Spinner from '../components/Basic/Spinner'
 import axios from 'axios'
 
 class Perfil extends React.Component {
@@ -18,7 +19,8 @@ class Perfil extends React.Component {
       email: "",
       password: "",
       nacionalidades : [{value: 'V',label: 'Venezolano'},{value: 'E', label: 'Extranjero'}],
-      user: JSON.parse(localStorage.user)
+      user: JSON.parse(localStorage.user),
+      loading: true,
     }
 
     this.onChange = this.onChange.bind(this)
@@ -28,7 +30,11 @@ class Perfil extends React.Component {
 
   componentWillMount(){
     let user = this.state.user
-    axios.get('/api/user/'+user.id).then(res => {
+    axios.get('/api/user/'+user.id).then( async res => {
+      await this.setState({
+        loading : false
+      });
+
       this.setState({
         nombre:res.data.nombre,
         apellido:res.data.apellido,
@@ -65,102 +71,112 @@ class Perfil extends React.Component {
   }
 
   render () {
-    const { nombre, apellido, cedula, nacionalidad, direccion, email, password,telefono } = this.state
+    const {loading, nombre, apellido, cedula, nacionalidad, direccion, email, password,telefono } = this.state
     return(
-      <div className="card">
-        <div className="card-header">
-          <h3 className="card-title">Pefil de la Cuenta</h3>
-        </div>
-        <div className="card-body">
-          <form onSubmit={this.onSubmit}>
-            <div className="row">
-              <FormGroup
-                cols="col-md-6 col-sm-6"
-                label="Nombre"
-                requerido={true}
-                id="nombre"
-                type="text"
-                value={nombre}
-                onChange={this.onChange}
-                />
-              <FormGroup
-                cols="col-md-6 col-sm-6"
-                label="Apellido"
-                requerido={true}
-                id="apellido"
-                type="text"
-                value={apellido}
-                onChange={this.onChange}
-                />
+      <div>
+        {loading ? (
+          <div className="container">
+            <div className="row justify-content-center align-self-center" style={{ marginTop : '200px'}}>
+              <Spinner loading={loading} />
             </div>
-            <div className="row">
-              <FormGroup
-                cols="col-md-6 col-sm-6"
-                id="nacionalidad"
-                type="select"
-                label="Nacionalidad"
-                requerido={true}
-                onChange={this.onChange}
-                value={nacionalidad}
-                options={this.state.nacionalidades}
-              />
-              <FormGroup
-                cols="col-md-6 col-sm-6"
-                label="Cédula"
-                requerido={true}
-                id="cedula"
-                type="number"
-                value={cedula}
-                onChange={this.onChange}
-                />
+          </div>
+        ) : (
+          <div className="card">
+            <div className="card-header">
+              <h3 className="card-title">Pefil de la Cuenta</h3>
             </div>
-            <div className="row">
-              <FormGroup
-                cols="col-md-6 col-sm-6"
-                label="Teléfono"
-                requerido={true}
-                id="telefono"
-                type="text"
-                value={telefono}
-                onChange={this.onChange}
-                />
-              <FormGroup
-                cols="col-md-6 col-sm-6"
-                label="Dirección"
-                requerido={true}
-                id="direccion"
-                type="textarea"
-                value={direccion}
-                onChange={this.onChange}
-                />
+            <div className="card-body">
+              <form onSubmit={this.onSubmit}>
+                <div className="row">
+                  <FormGroup
+                    cols="col-md-6 col-sm-6"
+                    label="Nombre"
+                    requerido={true}
+                    id="nombre"
+                    type="text"
+                    value={nombre}
+                    onChange={this.onChange}
+                    />
+                  <FormGroup
+                    cols="col-md-6 col-sm-6"
+                    label="Apellido"
+                    requerido={true}
+                    id="apellido"
+                    type="text"
+                    value={apellido}
+                    onChange={this.onChange}
+                    />
+                </div>
+                <div className="row">
+                  <FormGroup
+                    cols="col-md-6 col-sm-6"
+                    id="nacionalidad"
+                    type="select"
+                    label="Nacionalidad"
+                    requerido={true}
+                    onChange={this.onChange}
+                    value={nacionalidad}
+                    options={this.state.nacionalidades}
+                    />
+                  <FormGroup
+                    cols="col-md-6 col-sm-6"
+                    label="Cédula"
+                    requerido={true}
+                    id="cedula"
+                    type="number"
+                    value={cedula}
+                    onChange={this.onChange}
+                    />
+                </div>
+                <div className="row">
+                  <FormGroup
+                    cols="col-md-6 col-sm-6"
+                    label="Teléfono"
+                    requerido={true}
+                    id="telefono"
+                    type="text"
+                    value={telefono}
+                    onChange={this.onChange}
+                    />
+                  <FormGroup
+                    cols="col-md-6 col-sm-6"
+                    label="Dirección"
+                    requerido={true}
+                    id="direccion"
+                    type="textarea"
+                    value={direccion}
+                    onChange={this.onChange}
+                    />
+                </div>
+                <div className="row">
+                  <FormGroup
+                    cols="col-md-6 col-sm-6"
+                    label="Email"
+                    requerido={true}
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={this.onChange}
+                    />
+                  <FormGroup
+                    cols="col-md-6 col-sm-6"
+                    label="Password"
+                    requerido={false}
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={this.onChange}
+                    />
+                </div>
+                <div className="row">
+                  <div className="col-md-6 col-sm-6 offset-md-3 offset-sm-3 ">
+                    <button type="submit" className="btn btn-primary btn-block">Modificar</button>
+                  </div>
+                </div>
+              </form>
             </div>
-            <div className="row">
-              <FormGroup
-                cols="col-md-6 col-sm-6"
-                label="Email"
-                requerido={true}
-                id="email"
-                type="email"
-                value={email}
-                onChange={this.onChange}
-                />
-              <FormGroup
-                cols="col-md-6 col-sm-6"
-                label="Password"
-                requerido={false}
-                id="password"
-                type="password"
-                value={password}
-                onChange={this.onChange}
-                />
-            </div>
-            <div className="row">
-              <div className="col-md-6 col-sm-6 offset-md-3 offset-sm-3 ">
-                <button type="submit" className="btn btn-primary btn-block">Modificar</button>
-              </div>
-            </div>
-          </form>
-        </div>
+          </div>
+        )}
       </div>
     )
   }

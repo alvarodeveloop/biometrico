@@ -31,6 +31,7 @@ import EditTurno from './views/Edit/EditTurno'
 import Trabajador from './views/Trabajador'
 import EditTrabajador from './views/Edit/EditTrabajador'
 import TakeAssist from './views/TakeAssist'
+import TakePicture from './views/TakePicture'
 
 
 const user = localStorage.getItem('user')
@@ -44,7 +45,6 @@ export const AppRoutes = () =>
       <Route path="/home" component={Authenticated(Home)}  />
       <Route path="/reporte" component={Authenticated(Reporte)}  />
       <Route path="/perfil" component={Authenticated(Perfil)}  />
-
 
       /*rutas master */
       <Route exact path="/ente" component={Authenticated(Ente)}  />
@@ -60,13 +60,15 @@ export const AppRoutes = () =>
       <Route path="/editDepartamento/:id" component={Authenticated(EditDepartamento)} />
       <Route path="/config" component={Authenticated(Config)} />
 
-
     /* rutas directores */
       <Route path="/trabajador" component={Authenticated(Trabajador)}  />
       <Route path="/editTrabajador/:id" component={Authenticated(EditTrabajador)}  />
       <Route path="/turno" component={Authenticated(Turno)}  />
       <Route path="/editTurno/:id" component={Authenticated(EditTurno)}  />
       <Route path="/tomarAsistencia" component={Authenticated(TakeAssist)}  />
+      <Route path="/takePicture/:id" component={Authenticated(TakePicture)}  />
+
       <Route component={NotFound}  />
+
     </Switch>
   </App>

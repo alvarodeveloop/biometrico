@@ -4,7 +4,7 @@ import { toast,ToastContainer } from 'react-toastify';
 import PropTypes from 'prop-types'
 
 
-class ModalForm extends React.Component{
+class ModalDelete extends React.Component{
   constructor(props){
     super(props)
 
@@ -62,10 +62,10 @@ class ModalForm extends React.Component{
   }
 }
 
-ModalForm.propTypes = {
+ModalDelete.propTypes = {
   onDelete: PropTypes.func.isRequired,
   openModal: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
 }
 
-export default ModalForm
+export default ModalDelete

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import axios from 'axios'
 import FormGroup from '../../components/Basic/FormGroup'
 import { Button } from 'reactstrap'
+import Spinner from '../../components/Basic/Spinner'
 
 class EditCargo extends React.Component {
   constructor(props){
@@ -10,6 +11,7 @@ class EditCargo extends React.Component {
 
     this.state = {
       cargo: "",
+      loading: true
     }
 
     this.onChange = this.onChange.bind(this)
@@ -38,7 +40,11 @@ class EditCargo extends React.Component {
   }
 
   componentDidMount(){
-    axios.get('/api/cargo/'+this.props.match.params.id).then(res => {
+    axios.get('/api/cargo/'+this.props.match.params.id).then(async res => {
+      await this.setState({
+        loading : false
+      });
+
       this.setState({
         cargo : res.data.cargo
       })
@@ -50,38 +56,47 @@ class EditCargo extends React.Component {
 
   render () {
 
-    const {cargo} = this.state
+    const {cargo,loading} = this.state
 
     return(
-      <div className="card">
-        <div className="card-header">
-          <h5 className="card-tilte">Editar Cargo</h5>
-        </div>
-        <div className="card-body">
-          <form onSubmit={this.onSubmit}>
-            <div className="row">
-              <FormGroup
-                cols="col-md-12 col-sm-12"
-                id="cargo"
-                type="text"
-                label="Nombre Cargo"
-                requerido={true}
-                onChange={this.onChange}
-                value={cargo}
-                />
+      <div>
+        {loading ? (
+          <div className="container">
+            <div className="row justify-content-center align-self-center" style={{ marginTop : '200px'}}>
+              <Spinner loading={loading} />
             </div>
-            <div className="row">
-              <div className="col-md-3 col-sm-3 offset-md-3 offset-sm-3">
-                <Button color="secondary" type="button" onClick={this.returnBackOnClick} block>Volver</Button>
-              </div>
-              <div className="col-md-3 col-sm-3">
-                <Button type="submit" color="primary" block>Editar</Button>
-              </div>
+          </div>
+        ) : (
+          <div className="card">
+            <div className="card-header">
+              <h5 className="card-tilte">Editar Cargo</h5>
             </div>
-          </form>
-        </div>  
-      </div>
-
+            <div className="card-body">
+              <form onSubmit={this.onSubmit}>
+                <div className="row">
+                  <FormGroup
+                    cols="col-md-12 col-sm-12"
+                    id="cargo"
+                    type="text"
+                    label="Nombre Cargo"
+                    requerido={true}
+                    onChange={this.onChange}
+                    value={cargo}
+                    />
+                </div>
+                <div className="row">
+                  <div className="col-md-3 col-sm-3 offset-md-3 offset-sm-3">
+                    <Button color="secondary" type="button" onClick={this.returnBackOnClick} block>Volver</Button>
+                  </div>
+                  <div className="col-md-3 col-sm-3">
+                    <Button type="submit" color="primary" block>Editar</Button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+    </div>
     )
   }
 }

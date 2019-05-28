@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import WrappedTable from '../components/Basic/WrappedTable'
 import TurnoForm from '../components/form/TurnoForm'
 import axios from 'axios'
+import Spinner from '../components/Basic/Spinner'
 
 class Turno extends React.Component {
   constructor(props){
@@ -22,7 +23,8 @@ class Turno extends React.Component {
       ],
       tbody: [],
       editRoute: '/editTurno/',
-      user: JSON.parse(localStorage.user)
+      user: JSON.parse(localStorage.user),
+      loading: true
     }
 
     this.get = this.get.bind(this)
@@ -34,7 +36,12 @@ class Turno extends React.Component {
   }
 
   get(){
-    axios.get('/api/turno').then(res => {
+    axios.get('/api/turno').then(async res => {
+
+      await this.setState({
+        loading : false
+      });
+
       this.setState({
         tbody: res.data
       })
@@ -44,7 +51,12 @@ class Turno extends React.Component {
   }
 
   delete(id){
-    axios.delete('/api/turno/'+id).then(res => {
+    axios.delete('/api/turno/'+id).then(async res => {
+
+      await this.setState({
+        loading : true
+      });
+
       this.get()
     }).catch(({response}) => {
       alert(response.data.error)
@@ -52,26 +64,36 @@ class Turno extends React.Component {
   }
 
   render () {
-    const {thead,tbody,tbody_key,editRoute,user} = this.state
+    const {thead,tbody,tbody_key,editRoute,user,loading} = this.state
 
     return(
       <div>
-        {user.id_perfil === 2 ? (
-          <TurnoForm get={this.get} />
-        ) : (null)}
-        <br/>
-        <div className="row">
-          <WrappedTable
-            cols="col-md-12 col-sm-12"
-            thead={thead}
-            tbody_original={tbody}
-            tbody_key={tbody_key}
-            delete={this.delete}
-            editRoute={editRoute}
-            hideDelete={user.id_perfil === 2 ? false : true}
-            hideEdit={user.id_perfil === 2 ? false : true}
-          />
-        </div>
+        {loading ? (
+          <div className="container">
+            <div className="row justify-content-center align-self-center" style={{ marginTop : '200px'}}>
+              <Spinner loading={loading} />
+            </div>
+          </div>
+        ) : (
+          <div>
+            {user.id_perfil === 2 ? (
+              <TurnoForm get={this.get} />
+            ) : (null)}
+            <br/>
+            <div className="row">
+              <WrappedTable
+                cols="col-md-12 col-sm-12"
+                thead={thead}
+                tbody_original={tbody}
+                tbody_key={tbody_key}
+                delete={this.delete}
+                editRoute={editRoute}
+                hideDelete={user.id_perfil === 2 ? false : true}
+                hideEdit={user.id_perfil === 2 ? false : true}
+                />
+            </div>
+          </div>
+        )}
       </div>
     )
   }

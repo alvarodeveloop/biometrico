@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import WrappedTable from '../components/Basic/WrappedTable'
 import DepartamentoForm from '../components/form/DepartamentoForm'
+import Spinner from '../components/Basic/Spinner'
 import axios from 'axios'
 
 class Departamento extends React.Component {
@@ -23,7 +24,8 @@ class Departamento extends React.Component {
         'email',
       ],
       tbody: [],
-      editRoute: '/editDepartamento/'
+      editRoute: '/editDepartamento/',
+      loading: true
     }
 
     this.get = this.get.bind(this)
@@ -35,7 +37,12 @@ class Departamento extends React.Component {
   }
 
   get(){
-    axios.get('/api/departamento').then(res => {
+    axios.get('/api/departamento').then(async res => {
+
+      await this.setState({
+        loading: false
+      });
+
       this.setState({
         tbody: res.data
       })
@@ -45,7 +52,11 @@ class Departamento extends React.Component {
   }
 
   delete(id){
-    axios.delete('/api/departamento/'+id).then(res => {
+    axios.delete('/api/departamento/'+id).then(async res => {
+      await this.setState({
+        loading: true
+      });
+
       this.get()
     }).catch(({response}) => {
       alert(response.data.error)
@@ -53,22 +64,32 @@ class Departamento extends React.Component {
   }
 
   render () {
-    const {thead,tbody,tbody_key,editRoute} = this.state
+    const {loading,thead,tbody,tbody_key,editRoute} = this.state
 
     return(
       <div>
-        <DepartamentoForm get={this.get} />
-        <br/>
-        <div className="row">
-          <WrappedTable
-            cols="col-md-12 col-sm-12"
-            thead={thead}
-            tbody_original={tbody}
-            tbody_key={tbody_key}
-            delete={this.delete}
-            editRoute={editRoute}
-          />
-        </div>
+        {loading ? (
+          <div className="container">
+            <div className="row justify-content-center align-self-center" style={{ marginTop : '200px'}}>
+              <Spinner loading={loading} />
+            </div>
+          </div>
+        ) : (
+          <div>
+            <DepartamentoForm get={this.get} />
+            <br/>
+            <div className="row">
+              <WrappedTable
+                cols="col-md-12 col-sm-12"
+                thead={thead}
+                tbody_original={tbody}
+                tbody_key={tbody_key}
+                delete={this.delete}
+                editRoute={editRoute}
+                />
+            </div>
+          </div>
+        )}
       </div>
     )
   }

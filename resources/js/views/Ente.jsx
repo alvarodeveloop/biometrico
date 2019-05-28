@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import WrappedTable from '../components/Basic/WrappedTable'
 import EnteForm from '../components/form/EnteForm'
 import axios from 'axios'
+import Spinner from '../components/Basic/Spinner'
 
 class Ente extends React.Component {
   constructor(props){
@@ -25,7 +26,8 @@ class Ente extends React.Component {
         'email',
       ],
       tbody: [],
-      editRoute: '/editEnte/'
+      editRoute: '/editEnte/',
+      loading: true
     }
 
     this.get = this.get.bind(this)
@@ -37,17 +39,26 @@ class Ente extends React.Component {
   }
 
   get(){
-    axios.get('/api/ente').then(res => {
+    axios.get('/api/ente').then(async res => {
+      await this.setState({
+        loading : false
+      });
+
       this.setState({
         tbody: res.data
       })
+
     }).catch(({response}) => {
       alert(response.data.error)
     })
   }
 
   delete(id){
-    axios.delete('/api/ente/'+id).then(res => {
+    axios.delete('/api/ente/'+id).then(async res => {
+      await this.setState({
+        loading : true
+      });
+
       this.get()
     }).catch(({response}) => {
       alert(response.data.error)
@@ -55,22 +66,32 @@ class Ente extends React.Component {
   }
 
   render () {
-    const {thead,tbody,tbody_key,editRoute} = this.state
+    const {loading,thead,tbody,tbody_key,editRoute} = this.state
 
     return(
       <div>
-        <EnteForm get={this.get} />
-        <br/>
-        <div className="row">
-          <WrappedTable
-            cols="col-md-12 col-sm-12"
-            thead={thead}
-            tbody_original={tbody}
-            tbody_key={tbody_key}
-            delete={this.delete}
-            editRoute={editRoute}
-          />
-        </div>
+        { loading ? (
+          <div className="container">
+            <div className="row justify-content-center align-self-center" style={{ marginTop : '200px'}}>
+              <Spinner loading={loading} />
+            </div>
+          </div>
+        ) : (
+          <div>
+            <EnteForm get={this.get} />
+            <br/>
+            <div className="row">
+              <WrappedTable
+                cols="col-md-12 col-sm-12"
+                thead={thead}
+                tbody_original={tbody}
+                tbody_key={tbody_key}
+                delete={this.delete}
+                editRoute={editRoute}
+                />
+            </div>
+          </div>
+        )}
       </div>
     )
   }
