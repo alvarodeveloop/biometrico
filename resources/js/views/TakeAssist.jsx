@@ -40,6 +40,7 @@ class TakeAssist extends React.Component {
 
 
      let promises = [axios.get('/api/trabajador')]
+     let arreglo_fotos = []
 
      Promise.all(promises).then(async res => {
        this.setState({
@@ -57,7 +58,9 @@ class TakeAssist extends React.Component {
            let fullFaceDescription = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor()
 
            if (!fullFaceDescription) {
-             throw new Error(`no faces detected for ${v.nombre+ +v.apellido}`)
+              arreglo_fotos.push(
+                '<li>La foto del trabajador'+v.nombre+' '+v.apellido+' no pudo ser reconocida</li>'
+              )
            }
 
            const faceDescriptors = [fullFaceDescription.descriptor]
@@ -71,6 +74,14 @@ class TakeAssist extends React.Component {
          loading: false
        });
 
+       if(arreglo_fotos.length > 0){
+         let lista = '<ul>'
+         arreglo_fotos.forEach((v,i) => {
+           lista+=v
+         })
+         lista+='</ul>'
+         toast.error(lista, {containerId: 'A'});
+       }
 
         const videoEl = document.getElementById('preview')
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia
