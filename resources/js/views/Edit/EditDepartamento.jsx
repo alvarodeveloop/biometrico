@@ -56,9 +56,12 @@ class EditDepartamento extends React.Component {
       });
 
       Object.keys(this.state).forEach((v,i) => {
-        this.setState({
-          [v]: res.data[0][v]
-        })
+        if(v !== "nacionalidades"){
+
+          this.setState({
+            [v]: res.data[0][v]
+          })
+        }
       })
     }).catch(err => {
 
@@ -67,7 +70,7 @@ class EditDepartamento extends React.Component {
 
   render () {
 
-    const {loading, departamento,email,nombre,telefono,cedula,direccion,apellido} = this.state
+    const {loading,nacionalidad, nacionalidades,departamento,email,nombre,telefono,cedula,direccion,apellido} = this.state
 
     return(
       <div>

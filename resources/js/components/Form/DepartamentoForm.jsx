@@ -39,15 +39,18 @@ class EnteForm extends React.Component {
 
   clear(){
     Object.keys(this.state).forEach((v,k) => {
-      this.setState({
-        [v] : ""
-      })
+      if(v !== "nacionalidades"){
+
+        this.setState({
+          [v] : ""
+        })
+      }
     })
   }
 
   fieldForm(){
 
-    const {departamento,email,nombre,telefono,cedula,direccion,apellido} = this.state
+    const {nacionalidad,nacionalidades,departamento,email,nombre,telefono,cedula,direccion,apellido} = this.state
 
     return(
       <div>
