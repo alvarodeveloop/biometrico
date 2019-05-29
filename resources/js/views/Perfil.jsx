@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import FormGroup from '../components/Basic/FormGroup'
 import Spinner from '../components/Basic/Spinner'
+import { toast,ToastContainer } from 'react-toastify';
 import axios from 'axios'
 
 class Perfil extends React.Component {
@@ -57,8 +58,10 @@ class Perfil extends React.Component {
     delete filter.user
 
     axios.put('/api/user/'+user.id,filter).then(res =>{
-      alert('Registro Editado')
-      this.props.history.push('/home')
+      toast.success('Registro Editado!', {containerId: 'A'});
+      setTimeout(() => {
+        this.props.history.push('/home')
+      },2000)
     }).catch(err => {
       console.log(err)
     })
@@ -177,6 +180,7 @@ class Perfil extends React.Component {
             </div>
           </div>
         )}
+        <ToastContainer enableMultiContainer containerId={'A'} position={toast.POSITION.TOP_RIGHT} />
       </div>
     )
   }
