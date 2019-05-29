@@ -106,7 +106,6 @@ class EditTrabajador extends React.Component {
         turnos: array_turnos,
         user
       })
-      console.log(val[2])
 
     })
   }

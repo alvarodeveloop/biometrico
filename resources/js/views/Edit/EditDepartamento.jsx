@@ -19,6 +19,8 @@ class EditDepartamento extends React.Component {
       direccion: "",
       email: "",
       loading: true,
+      nacionalidad: "",
+      nacionalidades : [{value: 'V',label: 'Venezolano'},{value: 'E', label: 'Extranjero'}],
     }
 
     this.onChange = this.onChange.bind(this)
@@ -120,13 +122,14 @@ class EditDepartamento extends React.Component {
                 <div className="row">
                   <FormGroup
                     cols="col-md-6 col-sm-6"
-                    id="telefono"
-                    type="number"
-                    label="Teléfono"
+                    id="nacionalidad"
+                    type="select"
+                    label="Nacionalidad"
                     requerido={true}
                     onChange={this.onChange}
-                    value={telefono}
-                    />
+                    value={nacionalidad}
+                    options={this.state.nacionalidades}
+                  />
                   <FormGroup
                     cols="col-md-6 col-sm-6"
                     id="cedula"
@@ -140,6 +143,15 @@ class EditDepartamento extends React.Component {
                 <div className="row">
                   <FormGroup
                     cols="col-md-6 col-sm-6"
+                    id="telefono"
+                    type="number"
+                    label="Teléfono"
+                    requerido={true}
+                    onChange={this.onChange}
+                    value={telefono}
+                    />
+                  <FormGroup
+                    cols="col-md-6 col-sm-6"
                     id="email"
                     type="text"
                     label="Email"
@@ -147,6 +159,8 @@ class EditDepartamento extends React.Component {
                     onChange={this.onChange}
                     value={email}
                     />
+                </div>
+                <div className="row">
                   <FormGroup
                     cols="col-md-6 col-sm-6"
                     id="direccion"

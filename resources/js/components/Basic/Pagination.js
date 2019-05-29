@@ -164,12 +164,20 @@ export default PaginatedComponent => {
        */
       renderPagination() {
         let tbody = this.state.tbody_new
+        let min = 0
+        let max = 0
 
         let numberPages = Math.ceil(tbody.length / this.props.itemsPerPage),
           pages = [];
 
         // Create links
         if (numberPages > 1){
+          if(this.state.page > 0){
+            min = this.state.page - 1
+          }
+          if(this.state.page < numberPages - 1){
+              max = this.state.page + 1
+          }
 
           pages.push(
             <a href="#" className='Paginator__Page' key={'unique'} onClick={(e) => this.onClick(e, 0)}>
@@ -177,7 +185,7 @@ export default PaginatedComponent => {
             </a>
           )
 
-          for(let i = 0; i < numberPages; i++) {
+          for(let i = min; i < numberPages; i++) {
             // Podemos agregar elementos JSX a nuestro array. Recrodad que en
             // última instancia, son llamadas al método React.createElement
             let cssClass = "Paginator__Page";

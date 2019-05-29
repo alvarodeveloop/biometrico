@@ -114,7 +114,7 @@ class TableComponent extends React.Component{
                           {this.props.hideEdit && this.props.hideDelete ? (null) : (
                             <td>
 
-                              <button type="button" className="btn btn-danger btn-block dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Acciones</button>
+                              <button type="button" className="btn btn-danger btn-block dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" key={k}>Acciones</button>
                               <div className="dropdown-menu">
                                 {this.props.hideEdit ? '' : (
                                   <Link to={this.props.editRoute+v.id} className="dropdown-item">Editar</Link>

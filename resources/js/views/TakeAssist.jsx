@@ -24,6 +24,7 @@ class TakeAssist extends React.Component {
       worker : [],
       trabajadores: [],
       loading: true,
+      arreglo_id: [],
     }
 
     this.takeSnapshot = this.takeSnapshot.bind(this)
@@ -59,27 +60,33 @@ class TakeAssist extends React.Component {
 
            if (!fullFaceDescription) {
               arreglo_fotos.push(
-                '<li>La foto del trabajador'+v.nombre+' '+v.apellido+' no pudo ser reconocida</li>'
+                'La foto del trabajador'+v.nombre+' '+v.apellido+' no pudo ser reconocida'
               )
+           }else{
+             await this.setState({
+               arreglo_id: [...this.state.arreglo_id,v.id]
+             });
+             const faceDescriptors = [fullFaceDescription.descriptor]
+             return new faceapi.LabeledFaceDescriptors(v.nombre+' '+v.apellido, faceDescriptors)
            }
 
-           const faceDescriptors = [fullFaceDescription.descriptor]
-           return new faceapi.LabeledFaceDescriptors(v.id+'-'+v.nombre+' '+v.apellido, faceDescriptors)
 
          })
        )
        //1558810366.png
+       labelDestriptors = labelDestriptors.filter(v => v !== undefined)
+       
        await this.setState({
          worker : labelDestriptors,
          loading: false
        });
 
        if(arreglo_fotos.length > 0){
-         let lista = '<ul>'
+         let lista = ''
          arreglo_fotos.forEach((v,i) => {
-           lista+=v
+           lista+= v
+           lista+= "\n"
          })
-         lista+='</ul>'
          toast.error(lista, {containerId: 'A'});
        }
 
@@ -122,6 +129,7 @@ class TakeAssist extends React.Component {
 
 
     if(fullFaceDescriptions.length > 0){
+      console.log(this.state.worker,'aqui los trabajdores')
       const maxDescriptorDistance = 0.6
       const faceMatcher = new faceapi.FaceMatcher(this.state.worker, maxDescriptorDistance)
 
@@ -137,19 +145,19 @@ class TakeAssist extends React.Component {
 
           if(text.indexOf('unknown') === -1){
 
-            let idWorker = text.split('-')[0]
-            let registrando = this.state.registrados.filter(v => v == idWorker)
+            //let idWorker = text.split('-')[0]
+            let registrando = this.state.registrados.filter(v => v == this.state.arreglo_id[i])
 
             if(registrando.length < 1){
 
               this.setState({
-                registrados : [...this.state.registrados,idWorker]
+                registrados : [...this.state.registrados,this.state.arreglo_id[i]]
               });
 
               const drawBox = new faceapi.draw.DrawBox(box, { label: text })
               drawBox.draw(canvas)
 
-              await this.takeSnapshot(idWorker)
+              await this.takeSnapshot(this.state.arreglo_id[i])
             }
           }
           return i
