@@ -10,6 +10,15 @@ export default (logout) => {
   axios.post('/api/auth/logout').then(res => {
     setAuthorizationToken(null)
     logout()
+  }).catch(err => {
+    if(err.response){
+      if(err.response.status === 400){
+        setAuthorizationToken(null)
+        logout()
+      }
+    }else{
+      console.log(err)
+    }
   })
 
 }
