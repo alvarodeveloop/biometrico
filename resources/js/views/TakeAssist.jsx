@@ -29,6 +29,8 @@ class TakeAssist extends React.Component {
 
     this.takeSnapshot = this.takeSnapshot.bind(this)
     this.initScan = this.initScan.bind(this)
+    this.initInverval = this.initInverval.bind(this)
+
   }
 
   async componentDidMount(){
@@ -75,7 +77,7 @@ class TakeAssist extends React.Component {
        )
        //1558810366.png
        labelDestriptors = labelDestriptors.filter(v => v !== undefined)
-       
+
        await this.setState({
          worker : labelDestriptors,
          loading: false
@@ -99,16 +101,25 @@ class TakeAssist extends React.Component {
             stream => {
               videoEl.srcObject = stream
               localStream = stream
+              interval = this.initInverval()
               setTimeout(() => {
                 this.initScan()
               },1500)
             },
-            err => console.log(err,'si es aqui menor')
+            err => toast.error('Debe encender su cámara',{containerId: 'A'})
           )
         }else{
           console.log('error menor')
         }
      })
+  }
+
+  initInverval(){
+      return setInterval(() => {
+        this.setState({
+          registrados: this.state.registrados.slice(0,-1)
+        });
+      },300000)
   }
 
   async initScan(){
@@ -129,19 +140,17 @@ class TakeAssist extends React.Component {
 
 
     if(fullFaceDescriptions.length > 0){
-      console.log(this.state.worker,'aqui los trabajdores')
       const maxDescriptorDistance = 0.6
       const faceMatcher = new faceapi.FaceMatcher(this.state.worker, maxDescriptorDistance)
 
       const results = fullFaceDescriptions.map(fd => faceMatcher.findBestMatch(fd.descriptor))
-      console.log('aqui4')
+
       let promise_save = await Promise.all(
 
         results.map(async (bestMatch, i) => {
 
           const box = fullFaceDescriptions[i].detection.box
           const text = bestMatch.toString()
-          console.log(text,'aqui el txto')
 
           if(text.indexOf('unknown') === -1){
 
@@ -163,10 +172,6 @@ class TakeAssist extends React.Component {
           return i
         })
       )
-
-      await this.setState({
-        registrados: [],
-      })
 
       console.log('finished')
     }
@@ -216,6 +221,7 @@ class TakeAssist extends React.Component {
     vid.pause();
     vid.src = "";
     localStream.getTracks()[0].stop();
+    clearInterval(interval)
   }
 
   render () {
@@ -234,15 +240,15 @@ class TakeAssist extends React.Component {
           <div className="row">
             <div className="col-md-12 col-sm-12">
               <div className="card">
-                <div className="card-header">
+                <div className="card-header" style={{ backgroundColor: 'black', color: 'white'}}>
                   <h3 className="card-title">Registre su entrada y Salida</h3>
                 </div>
                 <div className="card-body">
                   <div className="row">
                     <div className="col-md-12 col-sm-12">
                       <div id="video" className="d-flex justify-content-center">
-                        <video id="preview" width="500px" height="300px" autoPlay muted></video>
-                        <canvas id="my_canvas" style={{ position:'absolute', top: '0px', left: '300px'}} width="500px" height="300px"></canvas>
+                        <video id="preview" width="900px" height="600px" autoPlay muted></video>
+                        <canvas id="my_canvas" style={{ position:'absolute', top: '0px', left: '120px'}} width="900px" height="600px"></canvas>
                         <div className="line" id="line" style={{visibility: 'hidden'}}></div>
                         <div className="line1" id="line1" style={{visibility: 'hidden'}}></div>
                       </div>
