@@ -54,17 +54,7 @@ class App extends Component {
       return setInterval( () =>{
         count++
         localStorage.setItem('count',count)
-        if(count === 85){
-          this.props.toggle()
-        }
-
-        if(count === 88){
-          if(this.props.isOpen){
-            this.props.toggle()
-          }
-          logoutSystem(this.props.logout)
-        }
-
+        this.extedsSession()
       }, 120000);
     }
 

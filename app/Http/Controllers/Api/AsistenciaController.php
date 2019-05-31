@@ -35,9 +35,9 @@ class AsistenciaController extends Controller
         $total_register = count($typeRegister);
         $aviable = true;
         if($total_register < 1){
-          $asis->tipo_registro = false;
+          $asis->tipo_registro = 1;
         }else if($total_register > 0 && $total_register < 2){
-          $asis->tipo_registro = true;
+          $asis->tipo_registro = 2;
         }else{
           $aviable = false;
         }
@@ -62,10 +62,10 @@ class AsistenciaController extends Controller
           $hora_salida_extra = strtotime('+'.$salida_extra.' minutes',strtotime($turno->hasta));
           //determinar si llega temprano,tarde o se va temprano,tarde
           $tipo_llegada = false;
-          $evaluate = !$asis->tipo_registro ? strtotime($turno->desde) : strtotime($turno->hasta);
+          $evaluate = $asis->tipo_registro === 1 ? strtotime($turno->desde) : strtotime($turno->hasta);
           $hora = strtotime($hora);
 
-          if(!$asis->tipo_registro){
+          if($asis->tipo_registro === 1){
             if($hora < $evaluate){
               $tipo_llegada = 0;
             }elseif($hora >= $evaluate && $hora <= $hora_entrada_extra){

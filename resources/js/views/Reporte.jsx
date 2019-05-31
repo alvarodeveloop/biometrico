@@ -26,8 +26,8 @@ class Reporte extends React.Component {
         {  value: 2, label: 'Tarde' },
       ],
       optionLlegada: [
-        {  value: false, label: 'Entrada' },
-        {  value: true, label: 'Salida' },
+        {  value: 1, label: 'Entrada' },
+        {  value: 2, label: 'Salida' },
       ],
       showAdvice: false,
       texto: "Generar",

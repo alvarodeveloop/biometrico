@@ -27,7 +27,7 @@ class Asistencia extends Model
       $sql = "SELECT a.*,
               CONCAT(t.nombre,' ',t.apellido) as nombre_trabajador,
               CASE a.tipo_registro
-              WHEN false THEN 'Entrada'
+              WHEN 1 THEN 'Entrada'
               ELSE 'Salida'
               END as tipo,
 
@@ -76,9 +76,9 @@ class Asistencia extends Model
 
       $extra = "";
       if(!$type){
-        $extra = "AND a.tipo_registro = false and a.tipo_llegada = 2";
+        $extra = "AND a.tipo_registro = 1 and a.tipo_llegada = 2";
       }else{
-        $extra = "AND a.tipo_registro = false and a.tipo_llegada < 2";
+        $extra = "AND a.tipo_registro = 1 and a.tipo_llegada < 2";
       }
 
       $sql = "SELECT * from(
@@ -163,7 +163,7 @@ class Asistencia extends Model
         }
       }
 
-      if($llegada !== null && $llegada !== ""){
+      if($llegada){
         if(!empty($where)){
           $where.= " and a.tipo_registro = $llegada";
         }else{
