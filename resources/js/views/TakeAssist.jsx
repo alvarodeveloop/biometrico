@@ -184,7 +184,7 @@ class TakeAssist extends React.Component {
   takeSnapshot(content){
     return new Promise((resolved,rejected) => {
 
-      var hidden_canvas = document.querySelector('#canvas_modal'),
+      /*var hidden_canvas = document.querySelector('#canvas_modal'),
       video = document.querySelector('#preview'),
 
       // Get the exact size of the video element.
@@ -195,10 +195,10 @@ class TakeAssist extends React.Component {
       hidden_canvas.width = width;
       hidden_canvas.height = height;
       context.drawImage(video, 0, 0, width, height);
-      var imageDataURL = hidden_canvas.toDataURL('image/png');
+      var imageDataURL = hidden_canvas.toDataURL('image/png');*/
 
       let objStore = {
-        imagen: imageDataURL,
+        //imagen: imageDataURL,
         id_trabajador: content
       }
       axios.post('/api/asistencia',objStore).then(async res => {

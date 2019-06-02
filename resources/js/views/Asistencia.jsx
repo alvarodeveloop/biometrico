@@ -17,7 +17,7 @@ class Asistencia extends React.Component {
         'Turno',
         'Tipo',
         'Llegada',
-        'Imagen',
+        //'Imagen',
         'Fecha',
       ],
       tbody_key: [
@@ -28,7 +28,7 @@ class Asistencia extends React.Component {
         'turno',
         'tipo',
         'llegada',
-        'imagen',
+        //'imagen',
         'fecha',
       ],
       tbody: [],

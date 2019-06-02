@@ -47,12 +47,12 @@ class AsistenciaController extends Controller
           $entrada_extra = $config->entrada_minuto_extra;
           $salida_extra = $config->salida_minuto_extra;
 
-          $image = $request->imagen;
-          $name_image = time().'.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
-          \Image::make($request->imagen)->save(public_path('images/asistencia/').$name_image);
+          //$image = $request->imagen;
+          //$name_image = time().'.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
+          //\Image::make($request->imagen)->save(public_path('images/asistencia/').$name_image);
 
           $asis->id_trabajador = $request->id_trabajador;
-          $asis->imagen = $name_image;
+          //$asis->imagen = $name_image;
 
           // buscar el turno del trabajador
           $trabajador = new Trabajador;

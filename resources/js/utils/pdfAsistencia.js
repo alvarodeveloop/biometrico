@@ -13,7 +13,7 @@ export default (data,user) => {
 		var header = [
 			{text:'Trabajador', style: 'tableHeader', alignment: 'center'},
 			{text:'Foto Trabajador', style: 'tableHeader', alignment: 'center'},
-			{text:'Foto Asistencia', style: 'tableHeader', alignment: 'center'},
+			//{text:'Foto Asistencia', style: 'tableHeader', alignment: 'center'},
 			{text:'Departamento\nTurno', style: 'tableHeader', alignment: 'center'},
 			{text:'Tipo Registro', style: 'tableHeader', alignment: 'center'},
 			{text:'Tiempo Registro', style: 'tableHeader', alignment: 'center'},
@@ -32,29 +32,30 @@ export default (data,user) => {
 				e.imagen_trabajador ? transformImage('../../../images/trabajador/'+e.imagen_trabajador) : null
 			)
 
-			promises.push(
+			/*promises.push(
 				transformImage('../../../images/asistencia/'+e.imagen)
-			)
+			)*/
 		})
 
 		Promise.all(promises).then(val => {
 
-			val.forEach((v,k) => {
+			/*val.forEach((v,k) => {
 				if(val[k * 2]){
 					objectImage['imagen_trabajador'+k] = val[k * 2]
 				}
 				if(val[(k * 2) + 1]){
 					objectImage['imagen_asistencia'+k] = val[(k * 2) + 1]
 				}
-			})
+			})*/
 
 
 			data.forEach((e,k) => {
 
 				bodyTable.push([
 					{text: e.nombre_trabajador, alignment: "center", style: 'paddingCell'},
-					{ stack: [ objectImage['imagen_trabajador'+k] ? { image: objectImage['imagen_trabajador'+k], alignment: 'center', width: 40 } : {text : ''} ]  },
-					{ stack: [ { image: objectImage['imagen_asistencia'+k], alignment: 'center', width: 40 } ] },
+					//{ stack: [ objectImage['imagen_trabajador'+k] ? { image: objectImage['imagen_trabajador'+k], alignment: 'center', width: 40 } : {text : ''} ]  },
+					{ stack: [ { image: val[k], alignment: 'center', width: 40 } ]  },
+					//{ stack: [ { image: objectImage['imagen_asistencia'+k], alignment: 'center', width: 40 } ] },
 					{text: e.departamento+'\n'+e.turno, alignment: "center", style: 'paddingCell'},
 					{text: e.tipo+'\n'+e.llegada, alignment: "center", style: 'paddingCell'},
 					{text: e.fecha, alignment: "center", style: 'paddingCell'},
@@ -75,7 +76,7 @@ export default (data,user) => {
 						style: 'tableExample',
 						color: '#444',
 						table: {
-							widths: ['*','*','*','*', '*','*'],
+							widths: ['*','*','*','*', '*'],
 							headerRows: 1,
 							// keepWithHeaderRows: 1,
 							body: bodyTable

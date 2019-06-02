@@ -54,7 +54,10 @@ class App extends Component {
       return setInterval( () =>{
         count++
         localStorage.setItem('count',count)
-        this.extedsSession()
+        if(count >= 45){
+          this.extedsSession()
+        }
+        
       }, 120000);
     }
 
