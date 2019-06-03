@@ -176,9 +176,7 @@ class TakeAssist extends React.Component {
       console.log('finished')
     }
 
-    setTimeout(() => {
-      this.initScan()
-    },2000)
+    this.initScan()
   }
 
   takeSnapshot(content){
