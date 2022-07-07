@@ -29,7 +29,7 @@
     "dependencies": {
         "face-api.js": "^0.20.0",
         "instascan": "^1.0.0",
-        "moment": "^2.24.0",
+        "moment": "^2.29.4",
         "pdfmake": "^0.1.56",
         "prop-types": "^15.7.2",
         "react-redux": "^7.0.3",
